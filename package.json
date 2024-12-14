@@ -1,0 +1,47 @@
+{
+    "type": "module",
+    "name": "neocitieswm",
+    "version": "1.0.0",
+    "description": "Set up an environment for the client.",
+    "main": "index.js",
+    "scripts": {
+        "http-server": "npx http-server -p 9001",
+        "dev": "vite",
+        "build": "vite build",
+        "serve": "vite preview",
+        "htmlhint": "npx htmlhint public src || exit 0",
+        "stylelint": "npx stylelint **/*.css || exit 0",
+        "stylelint:fix": "npx stylelint --fix **/*.css || exit 0",
+        "eslint": "npx eslint . || exit 0",
+        "eslint:fix": "npx eslint --fix . || exit 0",
+        "jsdoc": "npx jsdoc -c .jsdoc.json || exit 0",
+        "lint": "npm run htmlhint && npm run stylelint && npm run eslint",
+        "test": "npm run lint",
+        "clean": "rm -rf build/",
+        "clean-all": "npm run clean && rm -rf node_modules/ && rm -f package-lock.json"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "eslint": "^8.56.0",
+        "eslint-config-standard": "^17.1.0",
+        "eslint-plugin-import": "^2.29.1",
+        "eslint-plugin-jsdoc": "^46.9.1",
+        "eslint-plugin-n": "^16.5.0",
+        "eslint-plugin-promise": "^6.1.1",
+        "htmlhint": "^1.1.4",
+        "http-server": "^14.1.1",
+        "jsdoc": "^4.0.2",
+        "stylelint": "^16.0.2",
+        "stylelint-config-recommended": "^14.0.0",
+        "vite": "^5.0.10"
+    },
+    "dependencies": {
+        "babel-runtime": "^6.26.0",
+        "confetti-js": "^0.0.18",
+        "crypto-js": "^4.2.0",
+        "emoji-mart": "^5.5.2",
+        "path": "^0.12.7"
+    }
+}
