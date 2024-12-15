@@ -1,5 +1,12 @@
+import Timer from './timer.js'
+
 export default class Icon {
-  constructor (title, imagePath, clickHandler) {
+  constructor (title,
+               imagePath,
+               onhoverPath,
+               clickHandler,
+               onTime = null
+               ) {
     this.element = document.createElement('div')
     this.element.className = 'desktop-icon'
 
@@ -26,17 +33,15 @@ export default class Icon {
       width: 80px;
       cursor: pointer;
       padding: 8px;
-      border-radius: 8px;
-      transition: background-color 0.2s;
     `
 
     // Add hover state
     this.element.addEventListener('mouseenter', () => {
-      this.element.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'
+      this.image.src = onhoverPath
     })
 
     this.element.addEventListener('mouseleave', () => {
-      this.element.style.backgroundColor = 'transparent'
+      this.image.src = imagePath
     })
 
     this.image.style.cssText = `
@@ -44,12 +49,13 @@ export default class Icon {
       height: 60px;
       margin-bottom: 4px;
       border-radius: 4px;
+      this.transition: all 0.5s;
     `
 
     this.label.style.cssText = `
       color: white;
       text-align: center;
-      font-size: 12px;
+      font-size: 13px;
       text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
       word-wrap: break-word;
       max-width: 76px;

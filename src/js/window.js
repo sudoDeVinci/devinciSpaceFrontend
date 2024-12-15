@@ -54,76 +54,61 @@ class EventEmitter {
 export default class Window extends EventEmitter {
 
   /**
+	 * @private
+	 * @property WindowConfig
+	 */
+	#config
+
+  /**
    * Create a new Window instance with the provided configuration.
    * @param {string} id - The window identifier
    * @param {WindowConfig} config - The window configuration
    */
-  constructor (id, config) {
+  constructor (Id, config) {
     super()
-    this.id = id
-    this.title = config.title
-    this.content = config.content
-
-    if (config.savedState) {
-      const savedState = config.savedState
-      this.width = savedState.width
-      this.height = savedState.height
-      this.x = savedState.x
-      this.y = savedState.y
-      this.isMinimized = savedState.isMinimized
-      this.zIndex = savedState.zIndex
-    } else {
-      this.width = config.width
-      this.height = config.height
-
-      this.x = Math.min(
-        Math.max(0, Math.random() * (window.innerWidth - this.width - 100)),
-        window.innerWidth - this.width - 100
-      )
-      this.y = Math.min(
-        Math.max(50, Math.random() * (window.innerHeight - this.height - 100)),
-        window.innerHeight - this.height
-      )
-
-      this.isMinimized = false
-    }
-
-    // Initialize drag state
+		this.#config = config
+		this.id = Id
+		this.width = this.#config.width
+		this.height = this.#config.height
+    this.title = this.#config.title
+    this.content = this.#config.content
+    this.zIndex = this.#config.zIndex || 1
+		this.isMinimized = config.isMinimized || false
+		this.icon = config.icon || null
     this.isDragging = false
+		this.isResizing = false
     this.initialX = 0
     this.initialY = 0
     this.initialMouseX = 0
     this.initialMouseY = 0
 
-    this.createElement()
 
-    // Adjust initial positioning to ensure it's within viewport
-    this.x = Math.min(
-      Math.max(0, this.x),
-      Math.max(0, window.innerWidth -this.width)
-    )
-    this.y = Math.min(
-      Math.max(0, this.y),
-      Math.max(0, window.innerHeight - this.height)
-    )
+		this.x = config.x ||  Math.min(
+			Math.max(0,
+							 Math.random() * (window.innerWidth - this.width - 100)),
+							 window.innerWidth - this.width
+			)
 
-    if (this.isMinimized) {
-      this.minimize()
-    }
+		this.y = config.y || Math.min(
+			Math.max(100,
+							 Math.random() * (window.innerHeight - this.height) - 100),
+							 window.innerHeight - this.height
+			)
 
-    // Add resize event listener
-    window.addEventListener('resize', this.handleResize.bind(this))
+		this.#createElement()
 
-    // Addresize handles
-    this.createResizeHandles()
+		if (this.isMinimized) this.minimize()
+
+		window.addEventListener('resize', this.handleResize.bind(this))
+		this.createResizeHandles()
   }
 
   /**
    * Creates the DOM elements for the window
    * @private
    */
-  createElement () {
-    this.element = document.createElement('div')
+  #createElement () {
+		this.element = document.createElement('div')
     this.element.className = 'window'
     this.element.style.position = 'fixed'
     this.element.style.left = `${this.x}px`
@@ -138,15 +123,16 @@ export default class Window extends EventEmitter {
     this.titleBar.style.userSelect = 'none'
     this.titleBar.style.display = 'flex'
     this.titleBar.style.justifyContent = 'space-between'
+		this.titleBar.style.padding = '5px 8px'
     this.titleBar.style.alignItems = 'center'
 
     this.titleText = document.createElement('div')
     this.titleText.className = 'window-title-bar-text title-bar-text'
     this.titleText.textContent = this.title
-    this.titleText.style.fontSize = '13px'
+    this.titleText.style.fontSize = this.#config.styles.titlebar_fontsize || '12px'
     this.titleBar.appendChild(this.titleText)
 
-    const buttonContainer = document.createElement('div')
+		const buttonContainer = document.createElement('div')
     buttonContainer.className = 'title-bar-controls'
     buttonContainer.style.display = 'flex'
 
@@ -158,9 +144,10 @@ export default class Window extends EventEmitter {
       e.stopPropagation()
       this.toggleMinimize()
     }
+
     buttonContainer.appendChild(this.minimizeButton)
 
-    this.closeButton = document.createElement('button')
+		this.closeButton = document.createElement('button')
     this.closeButton.className = 'window-close-button'
     this.closeButton.ariaLabel = 'Close'
     
@@ -171,7 +158,7 @@ export default class Window extends EventEmitter {
     buttonContainer.appendChild(this.closeButton)
     this.titleBar.appendChild(buttonContainer)
 
-    this.contentArea = document.createElement('div')
+		this.contentArea = document.createElement('div')
     this.contentArea.className = 'window-content window-body'
     this.contentArea.innerHTML = this.content
 
@@ -179,12 +166,13 @@ export default class Window extends EventEmitter {
       e.preventDefault()
       this.startDrag(e)
     }
+
     this.element.appendChild(this.titleBar)
     this.element.appendChild(this.contentArea)
 
     this.element.onclick = () => this.emit('focus', this)
-  }
-
+	}
+  
   /**
    * Creates resize handles for the window
    * @private
@@ -192,12 +180,8 @@ export default class Window extends EventEmitter {
   createResizeHandles () {
     const resizeHandles = [
       { cursor: 'nwse-resize', position: 'top-left', dx: -1, dy: -1 },
-      { cursor: 'ns-resize', position: 'top-center', dx: 0, dy: -1 },
       { cursor: 'nesw-resize', position: 'top-right', dx: 1, dy: -1 },
-      { cursor: 'ew-resize', position: 'middle-left', dx: -1, dy: 0 },
-      { cursor: 'ew-resize', position: 'middle-right', dx: 1, dy: 0 },
       { cursor: 'nesw-resize', position: 'bottom-left', dx: -1, dy: 1 },
-      { cursor: 'ns-resize', position: 'bottom-center', dx: 0, dy: 1 },
       { cursor: 'nwse-resize', position: 'bottom-right', dx: 1, dy: 1 }
     ]
 
@@ -219,41 +203,17 @@ export default class Window extends EventEmitter {
           resizeHandle.style.width = '15px'
           resizeHandle.style.height = '15px'
           break
-        case 'top-center':
-          resizeHandle.style.top = '-5px'
-          resizeHandle.style.left = 'calc(50% - 5px)'
-          resizeHandle.style.width = '10px'
-          resizeHandle.style.height = '10px'
-          break
         case 'top-right':
           resizeHandle.style.top = '-5px'
           resizeHandle.style.right = '-5px'
           resizeHandle.style.width = '15px'
           resizeHandle.style.height = '15px'
           break
-        case 'middle-left':
-          resizeHandle.style.top = 'calc(50% - 5px)'
-          resizeHandle.style.left = '-5px'
-          resizeHandle.style.width = '10px'
-          resizeHandle.style.height = '10px'
-          break
-        case 'middle-right':
-          resizeHandle.style.top = 'calc(50% - 5px)'
-          resizeHandle.style.right = '-5px'
-          resizeHandle.style.width = '10px'
-          resizeHandle.style.height = '10px'
-          break
         case 'bottom-left':
           resizeHandle.style.bottom = '-5px'
           resizeHandle.style.left = '-5px'
           resizeHandle.style.width = '15px'
           resizeHandle.style.height = '15px'
-          break
-        case 'bottom-center':
-          resizeHandle.style.bottom = '-5px'
-          resizeHandle.style.left = 'calc(50% - 5px)'
-          resizeHandle.style.width = '10px'
-          resizeHandle.style.height = '10px'
           break
         case 'bottom-right':
           resizeHandle.style.bottom = '-5px'
@@ -401,31 +361,24 @@ export default class Window extends EventEmitter {
   }
 
   /**
-   * Returns the current state of the window
-   * @property {string} id - Window identifier
-   * @property {string} title - Window title
-   * @property {string} content - Window content
-   * @property {number} width - Window width
-   * @property {number} height - Window height
-   * @property {number} x - Window X position
-   * @property {number} y - Window Y position
-   * @property {boolean} isMinimized - Window minimize state
-   * @property {number} zIndex - Window z-index
-   * @returns {object} The window state
-   */
-  getState () {
-    return {
-      id: this.id,
-      title: this.title,
-      content: this.content,
-      width: this.width,
-      height: this.height,
-      x: this.x,
-      y: this.y,
-      isMinimized: this.isMinimized,
-      zIndex: this.zIndex
-    }
-  }
+	 * Get the window state as a WindowConfig object
+	 * @returns {WindowConfig}
+	 */
+	getState () {
+		return {
+			width: this.width,
+			height: this.height,
+			x: this.x,
+			y: this.y,
+			zIndex: this.zIndex,
+			isMinimized: this.isMinimized,
+			icon: this.icon,
+			title: this.title,
+			content: this.content,
+			styles: this.#config.styles,
+			events: this.#config.events,
+		}
+	}
 
   /**
    * Removes the window from the DOM
@@ -528,10 +481,6 @@ export default class Window extends EventEmitter {
     if (!this.isResizing) return
 
     this.isResizing = false
-
-    // Remove global event listeners
-    document.removeEventListener('mousemove', this.resize)
-    document.removeEventListener('mouseup', this.endResize)
 
     // Emit resize event if needed
     this.emit('resize', this)

@@ -20,7 +20,6 @@ export default class Environment {
     this.windows = new Map()
     this.icons = new Map()
     this.zIndexBase = 1000
-    this.currentlyDragging = null
     this.username = 'Anonymous-' + Math.floor(Math.random() * 1000)
 
     // Set default colors
@@ -285,46 +284,37 @@ export default class Environment {
   }
 
   /**
-   * @param {object} iconConfig - icon configuration object
-   * @param {string} iconConfig.title - icon title
-   * @param {string} iconConfig.image - icon image path
-   * @param {number} iconConfig.x - icon x position
-   * @param {number} iconConfig.y - icon y position
-   * @param {string} iconConfig.type - window type
-   * @param {number} iconConfig.height - window height
-   * @param {number} iconConfig.width - window width
-   * @param {Function} iconConfig.handler - icon click handler
-   * @returns {Icon} icon instance
+   * 
+   * @param {Object} config 
+   * @returns 
    */
-  addIcon ({
-    title,
-    image,
-    x,
-    y,
-    type,
-    height,
-    width,
-    handler
-  }) {
-    const icon = new Icon(title, image, () => this.newWindow(type, this.windowTypes.get(type.name)))
-    icon.setPosition(x, y)
+  addIcon (config) {
+    const icon = new Icon(config.title,
+                          config.image,
+                          config.onhover,
+                          () => this.newWindow(config.type, config),
+                          config.timed)
+    icon.setPosition(config.x, config.y)
     this.iconContainer.appendChild(icon.element)
-    this.icons.set(title, icon)
+    this.icons.set(config.title, icon)
     return icon
   }
 
   addDefaultIcons () {
     const defaultIcons = [
       {
-        title: 'Chat',
-        image: 'icons/bonzi.ico',
+        title: 'Welcome',
+        image: 'images/clippy.gif',
+        onhover: 'images/clippy_closeup.gif',
         x: 20,
         y: 80,
-        type: ChatWindow,
-        height: 700,
-        width: 350
-      },
+        type: Window,
+        height: 400,
+        width: 550,
+        content: "<img src = 'images/clippy.gif'/>"
+      }
     ]
+
     defaultIcons.forEach(icon => {
       this.addIcon(icon)
     })
@@ -370,6 +360,7 @@ export default class Environment {
   }
 
   removeWindow (window) {
+    console.log('Removing window:', window.id)
     if (this.windows.has(window.id)) {
       this.windows.delete(window.id)
       this.environment.removeChild(window.element)
@@ -448,31 +439,27 @@ export default class Environment {
       }
     }
 
-    //console.log('Creating window:', id, WindowClass.name, config)
-
-    let window = null
-
-    window = new WindowClass(id, config)
+    const newWindow = new WindowClass(id, config)
 
     Object.entries(config.events).forEach(([event, handler]) => {
-      window.on(event, handler)
+      newWindow.on(event, handler)
     })
 
     // Set up event listeners
-    window.on('close', () => this.removeWindow(window))
-    window.on('focus', () => this.bringToFront(window))
-    window.on('dragStart', () => this.startDragging(window))
-    window.on('minimize', () => this.saveState())
-    window.on('drag', () => this.saveState())
-    window.on('dragEnd', () => this.saveState())
-    window.on('popup', (data) => this.newWindow(`${crypto.randomUUID()}-${id}`, data, Popup))
+    newWindow.on('close', (win) => this.removeWindow(win))
+    newWindow.on('focus', (win) => this.bringToFront(win))
+    newWindow.on('dragStart', () => this.startDragging(newWindow))
+    newWindow.on('minimize', () => this.saveState())
+    newWindow.on('drag', () => this.saveState())
+    newWindow.on('dragEnd', () => this.saveState())
+    newWindow.on('popup', (data) => this.newWindow(`${crypto.randomUUID()}-${id}`, data, Popup))
 
-    this.windows.set(window.id, window)
-    this.environment.appendChild(window.element)
+    this.windows.set(newWindow.id, newWindow)
+    this.environment.appendChild(newWindow.element)
     this.updateZIndices()
     this.saveState()
 
-    return window
+    return newWindow
   }
 
   toggleEmojis (window) {
