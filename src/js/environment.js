@@ -307,11 +307,33 @@ export default class Environment {
         image: 'images/clippy.gif',
         onhover: 'images/clippy_closeup.gif',
         x: 20,
-        y: 80,
+        y: 50,
         type: Window,
         height: 400,
         width: 550,
         content: "<img src = 'images/clippy.gif'/>"
+      },
+      {
+        title: 'Current Projects',
+        image: 'icons/win_controls/console.png',
+        onhover: 'icons/win_controls/console.png',
+        x: 20,
+        y: 175,
+        type: Window,
+        height: 400,
+        width: 550,
+        content: ""
+      },
+      {
+        title: 'Music',
+        image: 'icons/win_controls/music.png',
+        onhover: 'icons/win_controls/music.png',
+        x: 20,
+        y: 300,
+        type: Window,
+        height: 400,
+        width: 550,
+        content: ""
       }
     ]
 
