@@ -1,5 +1,7 @@
 # Devinci.Cloud
 
+![Current Visual](/public/images/screenshot.png)
+
 This is my personal portfolio website, devinci.cloud. The site is modeled after a Windows 98 desktop, complete with a start menu, taskbar, and desktop icons. The site components are built purely as ES6 modules, and bundled using Vite.
 
 Styling for the windows components is done using the [98.css](https://jdan.github.io/98.css/) package for consistency. 
@@ -35,7 +37,3 @@ If you'd like to run this site locally, you can do so by cloning the repository 
     ```bash
     npm run serve
     ```
-
-## Current Visual
-
-![Current Visual](/public/images/screenshot.png)
