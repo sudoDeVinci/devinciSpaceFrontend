@@ -1,5 +1,5 @@
 import Environment from './environment.js'
-import Window from './window.js'
+import Window from './Windows/window.js'
 
 // Clear any existing state if needed
 localStorage.removeItem('windowEnvironmentState')
@@ -8,7 +8,7 @@ localStorage.removeItem('windowEnvironmentState')
 const env = new Environment(true)
 env.clearSavedState()
 
-/*
+
 const config = {
     height: 300,
     width: 400,
@@ -18,4 +18,3 @@ const config = {
 }
 
 env.newWindow(Window, config)
-*/
