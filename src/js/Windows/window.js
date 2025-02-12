@@ -485,4 +485,51 @@ export default class Window extends EventEmitter {
     // Emit resize event if needed
     this.emit('resize', this)
   }
+
+  /**
+     * @typedef {Object} TextFragment
+     * @property {string} type
+     * @property {string} content
+     */
+
+
+  /**
+   * @param {string} text
+   * @returns {TextFragment[]} Fragments of text
+   * @description Splits text into code and text fragments
+   */
+  static parseMessageContent (text) {
+    const fragments = []
+    let currentIndex = 0
+    const codeBlockRegex = /```([\s\S]*?)```/g
+
+    let match
+    while ((match = codeBlockRegex.exec(text)) !== null) {
+      // Add text before code block
+      if (match.index > currentIndex) {
+        fragments.push({
+          type: 'text',
+          content: text.slice(currentIndex, match.index)
+        })
+      }
+
+      // Add code block
+      fragments.push({
+        type: 'code',
+        content: match[1].trim()
+      })
+
+      currentIndex = match.index + match[0].length
+    }
+
+    // Add remaining text
+    if (currentIndex < text.length) {
+      fragments.push({
+        type: 'text',
+        content: text.slice(currentIndex)
+      })
+    }
+
+    return fragments
+  }
 }

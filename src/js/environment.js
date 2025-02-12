@@ -1,8 +1,8 @@
-import Window from './window.js'
-import WindowConfig from './window.js'
-import ChatWindow from './chat.js'
-import EmojiSelector from './emojiselector.js'
-import Popup from './timedwindow.js'
+import Window from './Windows/window.js'
+import WindowConfig from './Windows/window.js'
+import ChatWindow from './Windows/chatwindow.js'
+import EmojiSelector from './Windows/emojiselector.js'
+import Popup from './Windows/timedwindow.js'
 import Icon from './Icon.js'
 
 /**
@@ -152,8 +152,9 @@ export default class Environment {
     this.notificationContainer.style.marginLeft = 'auto'
     this.notificationContainer.style.alignItems = 'center'
 
+    this.datetime = new Date()
     const time = document.createElement('div')
-    time.textContent = new Date().toLocaleTimeString()
+    time.textContent = this.datetime.toLocaleTimeString()
     time.style.fontSize = '14px'
     time.style.color = 'rgb(0, 0, 0)'
     time.style.fontFamily = '"Pixelated MS Sans Serif", Arial'
@@ -162,7 +163,10 @@ export default class Environment {
     time.style.textOverflow = 'ellipsis'
     this.notificationContainer.appendChild(time)
     this.taskbar.appendChild(this.notificationContainer)
-
+    setInterval(() => {
+      this.datetime.setSeconds(this.datetime.getSeconds() + 1)
+      time.textContent = this.datetime.toLocaleTimeString()
+    }, 1000)
     // Bind methods
     this.onMouseMove = this.onMouseMove.bind(this)
     this.onMouseUp = this.onMouseUp.bind(this)
@@ -275,7 +279,7 @@ export default class Environment {
     this.taskbar.appendChild(icon1)
     const icon2 = this.createTaskbarIcon('Projects', Window, null)
     this.taskbar.appendChild(icon2)
-    const icon3 = this.createTaskbarIcon('About Me', Window, null)
+    const icon3 = this.createTaskbarIcon('Posts', Window, null)
     this.taskbar.appendChild(icon3)
     const icon4 = this.createTaskbarIcon('Contact', Window, null)
     this.taskbar.appendChild(icon4)
@@ -309,8 +313,8 @@ export default class Environment {
         x: 20,
         y: 50,
         type: Window,
-        height: 400,
-        width: 550,
+        height: 250,
+        width: 350,
         content: "<img src = 'images/clippy.gif'/>"
       },
       {

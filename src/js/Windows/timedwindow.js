@@ -1,19 +1,9 @@
 import Window from './window.js'
-import Timer from './timer.js'
+import Timer from '../timer.js'
 
 export default class Popup extends Window {
   constructor (id, config) {
     super(id, config)
-
-    // Enhanced styling for popups
-    this.element.style.boxShadow = config.styles.boxShadow || '0 4px 20px rgba(0,0,0,0.15)'
-    this.element.style.borderRadius = config.styles.borderRadius || '12px'
-    this.element.style.border = config.styles.border || 'none'
-
-    // Style the title bar
-    this.titleBar.style.backgroundColor = config.styles.backgroundColor || '#4338ca'
-    this.titleBar.style.borderTopLeftRadius = config.styles.borderTopLeftRadius || '12px'
-    this.titleBar.style.borderTopRightRadius = config.styles.borderTopRightRadius || '12px'
 
     // Create timer with fade effect
     this.timer = new Timer({

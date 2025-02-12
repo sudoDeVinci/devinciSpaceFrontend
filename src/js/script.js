@@ -8,6 +8,7 @@ localStorage.removeItem('windowEnvironmentState')
 const env = new Environment(true)
 env.clearSavedState()
 
+/*
 const config = {
     height: 300,
     width: 400,
@@ -17,3 +18,4 @@ const config = {
 }
 
 env.newWindow(Window, config)
+*/
