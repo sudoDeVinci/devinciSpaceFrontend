@@ -6,7 +6,7 @@ This is the frontend component of personal portfolio website, devinci.cloud. The
 
 Styling for the windows components is done using the [98.css](https://jdan.github.io/98.css/) package for consistency.
 
-The Server component of the site is a custom minimal Flask server, available [here](https://github.com/sudoDeVinci/devinci.cloud-backend). 
+The Server component of the site is a custom minimal Flask server and sqlite database, available [here](https://github.com/sudoDeVinci/devincicloud-backend). 
 
 # Usage
 
