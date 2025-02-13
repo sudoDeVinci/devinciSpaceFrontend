@@ -12,11 +12,10 @@ import Icon from './Icon.js'
 export default class Environment {
 
   /**
-   * @param {boolean} autoRestore
    * @returns {Environment}
    * @constructor
    */
-  constructor (autoRestore = false) {
+  constructor () {
     this.windows = new Map()
     this.icons = new Map()
     this.zIndexBase = 1000
@@ -176,10 +175,6 @@ export default class Environment {
     document.addEventListener('mousemove', this.onMouseMove)
     document.addEventListener('mouseup', this.onMouseUp)
     window.addEventListener('beforeunload', this.saveState)
-
-    if (autoRestore && localStorage.getItem('windowEnvironmentState')) {
-      this.restoreState()
-    }
 
     // Append environment to the document
     document.body.appendChild(this.environment)
@@ -556,30 +551,6 @@ export default class Environment {
       }))
     }
     localStorage.setItem('windowEnvironmentState', JSON.stringify(state))
-  }
-
-  async restoreState () {
-    try {
-      const savedState = localStorage.getItem('windowEnvironmentState')
-      if (savedState) {
-        const state = JSON.parse(savedState)
-        for (const windowState of state.windows) {
-          // Import the appropriate window class based on the saved className
-          const WindowClass = windowState.className // Default to base Window class
-          this.createWindow(
-            windowState.id,
-            windowState.title,
-            windowState.content,
-            windowState.width,
-            windowState.height,
-            windowState,
-            WindowClass
-          )
-        }
-      }
-    } catch (error) {
-      console.error('Error restoring window state:', error)
-    }
   }
 
   clearSavedState () {
