@@ -532,4 +532,71 @@ export default class Window extends EventEmitter {
 
     return fragments
   }
+
+
+  /**
+   * Parse scripts as either inline or external and append to the content area.
+   * @param {HTMLScriptElement[]} scripts 
+   */
+  async handleScripts (scripts) {
+
+    const outscripts = []
+
+    for (const script of scripts) {
+      if (script.src === "") outscripts.push(script)
+
+      try {
+        const response = await fetch(script.src)
+        const scriptElement = document.createElement('script')
+        scriptElement.textContent = await response.text()
+        outscripts.push(scriptElement)
+      } catch (err) {
+        console.error('Failed to load external script:', err)
+      }
+    }
+
+    outscripts.forEach(script => this.contentArea.appendChild(script))
+  }
+
+
+  /**
+   * Fetch the contents of the window from a URL.
+   * @param {string} url - URL to fetch window contents from
+   */
+  async fetchWindowContents(url, window) {
+
+    const oldTitle = this.title
+    const oldContent = this.content
+
+    this.title = 'Loading...'
+    const loadingGif = HTMLImageElement()
+    loadingGif.src = this.#config.styles?.loadingImage || 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExMm42dHA0cWY3b3Y5Yzg5Z3k0Y210a2o4dDk2Z3o0dzBqdjhkZnhhMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7bu3XilJ5BOiSGic/giphy.gif'
+    this.contentArea.innerHTML = ''
+    this.contentArea.appendChild(loadingGif)
+
+    try {
+      const response = await fetch(url)
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+      const data = await response.text()
+      const page = new DOMParser().parseFromString(data, 'text/html')
+
+      // Update window content
+      this.title = page.querySelector('title')?.textContent || oldTitle
+      this.content = page.querySelector('body')?.innerHTML || oldContent
+
+      // Handle scripts after content is loaded
+      const scripts = Array.from(page.querySelectorAll('script'))
+      const baseUrl = new URL(url).origin
+      scripts.forEach(script => {
+        if (script.src.startsWith('/')) {
+          script.src = `${baseUrl}${script.src}`
+        } 
+      })
+      await this.handleScripts(scripts)
+    } catch (err) {
+      console.error('Failed to fetch window contents:', err)
+      this.title = oldTitle
+      this.content = oldContent
+    }
+  }
 }

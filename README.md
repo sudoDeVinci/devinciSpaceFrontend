@@ -132,6 +132,7 @@ The Window class isn
 
 ## TODO
 - [ ] Add more custom window types
+- [ ] Add option to stop windows from being exitable
 - [ ] Add music window
 - [ ] Add project window
 - [ ] Add contact window 

@@ -483,6 +483,11 @@ export default class Environment {
     return newWindow
   }
 
+  /**
+   * Slapjob function to toggle emojiselector for chat windows.
+   * This is bad and should be removed in favour of a more standard solution.
+   * @param {*} window 
+   */
   toggleEmojis (window) {
     if (!window.emojiSelector) {
       window.emojiSelector = this.createWindow(
