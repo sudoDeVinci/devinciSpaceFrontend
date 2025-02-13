@@ -54,14 +54,44 @@ In each label, from top to bottom you're given
 2. The CSS class/ID name
 3. The attribute name within the Envionment class
 
-When creating a new 
+When creating a new Envionment, you just declare a new instance. Environment takes no arguments.
+
+```js
+const env = new Environment()
+```
 
 # Windows
 
-Windows can be created with the `newWindow` method of the Environment. When creating a Winidow, we pass the window class type as well as a WindowConfig object to style and set the state of our window. This is as simple as:
+`Windows` as objects in the DOM are divs inside the `Environment` with a `fixed` position css style and a hidden overflow.
+A `Window` as a Javascript class holds the contents of a single page of our site. It's draggable, exitable, minimizable, resizable, and can be hidden behind other windows.
+
+The Window is made of different parts much like the Environment, though they are much less complex.
+
+![window](/public/images/window.png)
+
+<br>
+
+## TODO: Window Configs
+
+Since Windows are simply divs, our main way of controlling them is changing their CSS properties in response to actions. For windows, there are a number of these key values we care about:
+
+    - width - Window width in pixels
+    - height - Window height in pixels
+    - title - Window title visible in top left
+    - content - The HTML content inside the window being displayed.
+    - zIndex - The z-index (depth-posiiton) of the window.
+    - isMinimized - whether the window is minimized.
+    - icon - A oath to the icon image for the window.
+    - x position - The x position of the window on screen in pixels.
+    - y posiiton - The y position of the window on screen in pixels.
+
+
+Windows can be created with the `newWindow` method of the Environment.
+When creating a Window, we pass the window class type as well as a WindowConfig
+object to style and set the state of our window. This is as simple as:
 
 ```js
-const env = new Environment(true)
+const env = new Environment()
 
 
 const config = {
@@ -99,3 +129,11 @@ env.newWindow(Window, config)
 # The Window Class
 
 The Window class isn
+
+## TODO
+- [ ] Add more custom window types
+- [ ] Add music window
+- [ ] Add project window
+- [ ] Add contact window 
+- [ ] Add more icons
+- [x] Make clock realtime
