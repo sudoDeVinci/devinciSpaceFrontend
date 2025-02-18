@@ -418,6 +418,23 @@ export default class Environment {
   }
 
   /**
+   * Export the current icon configuration of a window, then add it to the environment.
+   * The icon will act as a shortcut to the window.
+   * @param {Window} window - The window to export the icon for
+   */
+  exportIconConfig (window) {
+    const config = {
+      title: window.title,
+      image: window.icon,
+      onhover: window.icon,
+      x: 20,
+      y: 50,
+      clickhandler: () => this.newWindow(typeof window, window.getConfig())
+    }
+    this.addIcon(config)
+  }
+
+  /**
    * Create a new window and add it to the environment
    * @param {typeof Window} WindowClass - window class/subclass type
    * @param {WindowConfig} config - window configuration object
@@ -493,6 +510,7 @@ export default class Environment {
     newWindow.on('drag', () => this.saveState())
     newWindow.on('dragEnd', () => this.saveState())
     newWindow.on('popup', (data) => this.newWindow(`${crypto.randomUUID()}-${id}`, data, Popup))
+    newWindow.on('exportIconConfig', () => this.exportIconConfig(newWindow))
 
     this.windows.set(newWindow.id, newWindow)
     this.environment.appendChild(newWindow.element)

@@ -1,3 +1,5 @@
+/** @import {IconConfig} from '../Icon.js' */
+
 /**
  * @typedef {Object} WindowConfig
  * @property {number} width - Default window width
@@ -172,6 +174,14 @@ export default class Window extends EventEmitter {
 
     this.element.onclick = () => this.emit('focus', this)
 	}
+
+  /**
+   * Get the window configuration.
+   * @returns {WindowConfig} 
+   */
+  getConfig () {
+    return {...this.#config}
+  }
   
   /**
    * Creates resize handles for the window
@@ -598,6 +608,14 @@ export default class Window extends EventEmitter {
       this.title = oldTitle
       this.content = oldContent
     }
+  }
+
+  /**
+   * Emit a signal ''exportIconConfig'' to the environment.
+   * @fires IconConfig#exportIconConfig
+   */
+  exportIconConfig () {
+    this.emit('exportIconConfig', this)
   }
 }
 
