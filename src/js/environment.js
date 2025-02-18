@@ -325,8 +325,6 @@ export default class Environment {
         onhover: 'icons/win_controls/console.png',
         x: 20,
         y: 175,
-        height: 400,
-        width: 550,
         content: "",
         clickhandler: () => this.newWindow(Window, {title: 'Current Projects',
                                                     content: 'Projects go here!',
@@ -339,10 +337,19 @@ export default class Environment {
         onhover: 'icons/win_controls/music.png',
         x: 20,
         y: 300,
-        height: 400,
-        width: 550,
         clickhandler: () => this.newWindow(Window, {title: 'Music',
                                                     content: 'Music goes here!',
+                                                    width: 600,
+                                                    height: 400})
+      },
+      {
+        title: 'Bonzi',
+        image: 'icons/bonzi.ico',
+        onhover: 'icons/bonzi.ico',
+        x: 20,
+        y: 425,
+        clickhandler: () => this.newWindow(Window, {title: 'Bonzi',
+                                                    content: 'Literal malware!',
                                                     width: 600,
                                                     height: 400})
       }

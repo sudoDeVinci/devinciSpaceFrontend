@@ -22,6 +22,10 @@ class Icon {
                onhoverPath,
                clickHandler
                ) {
+
+    title = title || ''
+    imagePath = imagePath || 'imagees/0.png'
+    onhoverPath = onhoverPath || 'images/0.png'
     this.element = document.createElement('div')
     this.element.className = 'desktop-icon'
 
