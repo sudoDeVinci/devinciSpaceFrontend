@@ -1,4 +1,6 @@
-import {Window, WindowConfig} from './window.js'
+import {Window} from './window.js'
+
+/** @import {WindowConfig} from './window.js' */
 
 export default class ChatWindow extends Window {
   /**

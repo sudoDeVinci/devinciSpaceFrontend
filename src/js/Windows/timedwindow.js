@@ -1,4 +1,5 @@
-import {Window, WindowConfig} from './window.js'
+import {Window} from './window.js'
+/** @import {WindowConfig} from './window.js' */
 import Timer from '../timer.js'
 
 export default class Popup extends Window {

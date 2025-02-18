@@ -1,11 +1,26 @@
-import Timer from './timer.js'
+/**
+ * @typedef {Object} IconConfig
+ * @property {string} title - The title of the icon, displayed underneath the icon image.
+ * @property {string} image - The path to the image to be displayed as the icon.
+ * @property {string} onhover - The path to the image to be displayed when the icon is hovered over.
+ * @property {function} clickhandler - The function to be called when the icon is clicked.
+ * @property {number} x - The x-coordinate of the icon in px.
+ * @property {number} y - The y-coordinate of the icon in px.
+ */
 
-export default class Icon {
+class Icon {
+
+  /**
+   * Create a new Icon.
+   * @param {string} title - The title of the icon, displayed underneath the icon image.
+   * @param {string} imagePath - The path to the image to be displayed as the icon.
+   * @param {string} onhoverPath - The path to the image to be displayed when the icon is hovered over.
+   * @param {function} clickHandler - The function to be called when the icon is clicked. 
+   */
   constructor (title,
                imagePath,
                onhoverPath,
-               clickHandler,
-               onTime = null
+               clickHandler
                ) {
     this.element = document.createElement('div')
     this.element.className = 'desktop-icon'
@@ -67,3 +82,6 @@ export default class Icon {
     this.element.style.top = `${y}px`
   }
 }
+
+export {Icon}
+export {IconConfig}

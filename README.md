@@ -124,6 +124,30 @@ const config = {
 env.newWindow(Window, config)
 ```
 
+The most basic window types each have a default `WindowConfig` within the `Environment`. These are stored within the `Environment.windowTypes` Map.
+This is a mapping of `Window` sub-types to their default configs
+```js
+ /**
+ * @property {typeof Window, WindowConfig>} windowTypes - The types of windows that can be created
+ */
+this.windowTypes = new Map([
+    [Window.name, {
+    width: 600,
+    height: 400,
+    icon: '',
+    title: 'Window',
+    content: '',
+    styles: {},
+    events: {},
+    savedstate: {}
+    }],
+```
+
+You however, can create your own window subtypes, and use the `Environment.newWindow` to use it.
+Since there is no default config for your new window sub-type, the first config you ever pass to `newWindow` will become that default.
+
+It's important to note that if only some fields in your `WindowConfig` are defined, the rest will be taken from the known default within the `Environment.`
+
 # The Window Class
 
 The Window class isn

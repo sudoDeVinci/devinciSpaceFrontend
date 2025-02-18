@@ -1,3 +1,5 @@
+import { Window} from './window.js'
+
 /**
  * @typedef {Object} Comment
  * @property {string} uid
@@ -64,3 +66,5 @@ class BlogWindow extends Window {
         return blogpostPreview
     }
 }
+
+export {BlogWindow, Blogpost, Comment}

@@ -1,6 +1,13 @@
-import {Window, WindowConfig} from './window.js'
+import {Window} from './window.js'
+
+/** @import {WindowConfig} from './window.js' */
 
 export default class EmojiSelector extends Window {
+
+  /**
+   * @param {string} id - Window ID
+   * @param {WindowConfig} config - Window configuration
+   */
   constructor (id, config) {
     super(id, config)
 

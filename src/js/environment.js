@@ -1,8 +1,11 @@
-import {Window, WindowConfig} from './Windows/window.js'
+import {Window} from './Windows/window.js'
 import ChatWindow from './Windows/chat.js'
 import EmojiSelector from './Windows/emojiselector.js'
 import Popup from './Windows/timedwindow.js'
-import Icon from './Icon.js'
+import {Icon} from './Icon.js'
+
+/** @import {WindowConfig} from './Windows/window.js' */
+/** @import {IconConfig} from './Icon.js' */
 
 /**
  * Environment class for managing windows and icons in a desktop-like environment.
@@ -283,22 +286,27 @@ export default class Environment {
 
   /**
    * 
-   * @param {Object} config 
-   * @returns 
+   * @param {IconConfig} config 
+   * @returns {Icon} - The created icon
    */
   addIcon (config) {
+    console.log('Adding icon:', config.title)
     const icon = new Icon(config.title,
                           config.image,
                           config.onhover,
-                          () => this.newWindow(config.type, config),
-                          config.timed)
+                          config.clickhandler
+                        )
     icon.setPosition(config.x, config.y)
-    this.iconContainer.appendChild(icon.element)
     this.icons.set(config.title, icon)
+    this.iconContainer.appendChild(icon.element)
     return icon
   }
 
   addDefaultIcons () {
+
+    /**
+     * @type {IconConfig[]} - Default icons to be added to the desktop
+     */
     const defaultIcons = [
       {
         title: 'Welcome',
@@ -306,10 +314,10 @@ export default class Environment {
         onhover: 'images/clippy_closeup.gif',
         x: 20,
         y: 50,
-        type: Window,
-        height: 250,
-        width: 350,
-        content: "<img src = 'images/clippy.gif'/>"
+        clickhandler: () => this.newWindow(Window, {title: 'Welcome',
+                                                    content: "<img src = 'images/clippy.gif'/>",
+                                                    width: 350,
+                                                    height: 250})
       },
       {
         title: 'Current Projects',
@@ -317,10 +325,13 @@ export default class Environment {
         onhover: 'icons/win_controls/console.png',
         x: 20,
         y: 175,
-        type: Window,
         height: 400,
         width: 550,
-        content: ""
+        content: "",
+        clickhandler: () => this.newWindow(Window, {title: 'Current Projects',
+                                                    content: 'Projects go here!',
+                                                    width: 600,
+                                                    height: 400})
       },
       {
         title: 'Music',
@@ -328,10 +339,12 @@ export default class Environment {
         onhover: 'icons/win_controls/music.png',
         x: 20,
         y: 300,
-        type: Window,
         height: 400,
         width: 550,
-        content: ""
+        clickhandler: () => this.newWindow(Window, {title: 'Music',
+                                                    content: 'Music goes here!',
+                                                    width: 600,
+                                                    height: 400})
       }
     ]
 

@@ -1,5 +1,8 @@
 import Environment from './environment.js'
-import {Window, WindowConfig} from './Windows/window.js'
+import {Window} from './Windows/window.js'
+
+/** @import {WindowConfig} from './Windows/window.js' */
+/** @import {IconConfig} from './Icon.js' */
 
 // Clear any existing state if needed
 localStorage.removeItem('windowEnvironmentState')
@@ -15,7 +18,7 @@ env.clearSavedState()
 const config = {
     height: 300,
     width: 400,
-    icon: '🔥',
+    icon: null,
     title: 'Environment Test',
     content: '<p>This is a test</p>'
 }
