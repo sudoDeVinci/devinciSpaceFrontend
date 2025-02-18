@@ -71,9 +71,9 @@ The Window is made of different parts much like the Environment, though they are
 
 <br>
 
-## TODO: Window Configs
+## Window Configs
 
-Since Windows are simply divs, our main way of controlling them is changing their CSS properties in response to actions. For windows, there are a number of these key values we care about:
+Since Windows are simply divs, our main way of controlling them is changing their CSS properties in response to actions. For windows, there are a number of these key values we care about which are defined within the `WindowConfig`:
 
     - width - Window width in pixels
     - height - Window height in pixels
@@ -85,14 +85,12 @@ Since Windows are simply divs, our main way of controlling them is changing thei
     - x position - The x position of the window on screen in pixels.
     - y posiiton - The y position of the window on screen in pixels.
 
-
-Windows can be created with the `newWindow` method of the Environment.
-When creating a Window, we pass the window class type as well as a WindowConfig
+Windows can be created with the `newWindow` method of the `Environment`.
+When creating a `Window`, we pass the `Window` sub-class type as well as a `WindowConfig`
 object to style and set the state of our window. This is as simple as:
 
 ```js
 const env = new Environment()
-
 
 const config = {
     height: 300,

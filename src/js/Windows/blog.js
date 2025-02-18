@@ -63,15 +63,4 @@ class BlogWindow extends Window {
 
         return blogpostPreview
     }
-
-    /**
-     * @param {Blogpost[]} blogpost
-     * @returns {HTMLDivElement} Blogpost preview page
-     * @description Creates a blogpost preview page
-     */
-    static displayBlogPostsPreviews(blogposts) {
-
-    }
-
-    displayBlogPost() {}
 }

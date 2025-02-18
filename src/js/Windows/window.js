@@ -51,7 +51,7 @@ class EventEmitter {
  * @fires Window#dragEnd
  * @fires Window#minimize
  */
-export default class Window extends EventEmitter {
+class Window extends EventEmitter {
 
   /**
 	 * @private
@@ -600,3 +600,6 @@ export default class Window extends EventEmitter {
     }
   }
 }
+
+// Export the Window class and WindowConfigtype
+export { Window, WindowConfig }

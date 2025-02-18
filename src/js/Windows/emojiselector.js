@@ -1,4 +1,4 @@
-import Window from './window.js'
+import {Window, WindowConfig} from './window.js'
 
 export default class EmojiSelector extends Window {
   constructor (id, config) {

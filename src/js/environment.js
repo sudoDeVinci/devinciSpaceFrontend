@@ -1,5 +1,4 @@
-import Window from './Windows/window.js'
-import WindowConfig from './Windows/window.js'
+import {Window, WindowConfig} from './Windows/window.js'
 import ChatWindow from './Windows/chat.js'
 import EmojiSelector from './Windows/emojiselector.js'
 import Popup from './Windows/timedwindow.js'

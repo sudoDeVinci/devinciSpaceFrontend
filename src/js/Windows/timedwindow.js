@@ -1,7 +1,13 @@
-import Window from './window.js'
+import {Window, WindowConfig} from './window.js'
 import Timer from '../timer.js'
 
 export default class Popup extends Window {
+
+  /**
+   * Create a new Window instance with the provided configuration.
+   * @param {string} id - The window identifier
+   * @param {WindowConfig} config - The window configuration
+   */
   constructor (id, config) {
     super(id, config)
 
