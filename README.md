@@ -148,6 +148,42 @@ Since there is no default config for your new window sub-type, the first config 
 
 It's important to note that if only some fields in your `WindowConfig` are defined, the rest will be taken from the known default within the `Environment.`
 
+So we could create our own `Window` subclass on a file called `customwindow.js`
+
+```js
+import {Window} from './window.js'
+/** @import {WindowConfig} from './Window.js' */
+
+class CustomWindowClass extends Window {
+    ...
+}
+```
+
+Then from our main script file, we add this via `Environment.newWindow`.
+
+```js
+import Environment from './environment.js'
+import {CustomWindowClass} from './Windows/customwindow.js'
+/** @import {WindowConfig} from './Windows/window.js' */
+
+// Create environment with autoRestore true
+const env = new Environment(true)
+
+/**
+ * Create a new window with the following configuration
+ * @type {WindowConfig}
+ */
+const config = {
+    height: 300,
+    width: 400,
+    icon: null,
+    title: 'Environment Test',
+    content: '<p>This is a test</p>'
+}
+
+env.newWindow(CustomWindowClass, config)
+```
+
 # The Window Class
 
 The Window class isn
