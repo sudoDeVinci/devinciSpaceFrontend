@@ -438,6 +438,7 @@ export default class Environment {
    * Create a new window and add it to the environment
    * @param {typeof Window} WindowClass - window class/subclass type
    * @param {WindowConfig} config - window configuration object
+   * @returns {Window} window instance
    */
   newWindow (WindowClass = Window, config = {}) {
     const window = this.createWindow(crypto.randomUUID(), WindowClass, config)
@@ -445,6 +446,7 @@ export default class Environment {
     this.bringToFront(window)
     this.updateZIndices()
     this.saveState()
+    return window
   }
 
   /**

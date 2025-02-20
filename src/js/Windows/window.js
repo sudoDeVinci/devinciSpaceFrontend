@@ -7,6 +7,7 @@
  * @property {string} icon - Icon path
  * @property {string} title - Window title
  * @property {string} content - Window content
+ * @property {string} initialURL - Initial URL to fetch window contents from
  * @property {Object} [styles] - Styles for the window
  * @property {Object.<string, Function[]>} [events] - Event listeners & callbacks
  * @property {Object} [savedState] - Saved window state
@@ -109,7 +110,7 @@ export default class Window extends EventEmitter {
    * Creates the DOM elements for the window
    * @private
    */
-  #createElement () {
+  async #createElement () {
 		this.element = document.createElement('div')
     this.element.className = 'window'
     this.element.style.position = 'fixed'
@@ -173,6 +174,8 @@ export default class Window extends EventEmitter {
     this.element.appendChild(this.contentArea)
 
     this.element.onclick = () => this.emit('focus', this)
+
+    if (this.#config?.initialURL) await this.fetchWindowContents(this.#config.initialURL)
 	}
 
   /**
@@ -573,14 +576,14 @@ export default class Window extends EventEmitter {
    * Fetch the contents of the window from a URL.
    * @param {string} url - URL to fetch window contents from
    */
-  async fetchWindowContents(url, window) {
+  async fetchWindowContents(url) {
 
     const oldTitle = this.title
     const oldContent = this.content
 
     this.title = 'Loading...'
-    const loadingGif = HTMLImageElement()
-    loadingGif.src = this.#config.styles?.loadingImage || 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExMm42dHA0cWY3b3Y5Yzg5Z3k0Y210a2o4dDk2Z3o0dzBqdjhkZnhhMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7bu3XilJ5BOiSGic/giphy.gif'
+    const loadingGif = new HTMLImageElement()
+    loadingGif.src = this.#config?.styles?.loadingImage || 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExMm42dHA0cWY3b3Y5Yzg5Z3k0Y210a2o4dDk2Z3o0dzBqdjhkZnhhMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7bu3XilJ5BOiSGic/giphy.gif'
     this.contentArea.innerHTML = ''
     this.contentArea.appendChild(loadingGif)
 

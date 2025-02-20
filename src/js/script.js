@@ -20,7 +20,8 @@ const config = {
     width: 400,
     icon: null,
     title: 'Environment Test',
-    content: '<p>This is a test</p>'
+    content: '<p>This is a test</p>',
+    initialURL: '../welcome.html'
 }
 
-env.newWindow(Window, config)
+const window = env.newWindow(Window, config)

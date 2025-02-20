@@ -1,0 +1,71 @@
+@import url("utility.css");
+
+.content-area {
+    background-color: var(--off-white);
+    font-family: 'MS Sans Serif', Arial, sans-serif;
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .welcome-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  
+  .welcome-text {
+    flex: 1;
+  }
+  
+  .clippy-container {
+    flex-shrink: 0;
+    text-align: center;
+  }
+  
+  .welcome-header {
+    color: #000080;
+    margin-bottom: 16px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .welcome-message {
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  
+  .quick-links {
+    background-color: white;
+    border: 2px solid #808080;
+    margin-top: 20px;
+    justify-content: center;
+    padding: 10px;
+  }
+  
+  .quick-links-title {
+    color: #000080;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  
+  .link-button {
+    display: block;
+    margin: 0.25rem auto;
+    width: 95%;
+    max-width: 95%;
+    max-height: 40px;
+    font-size: 1.5rem;
+    font-weight:500;
+    padding: 5px;
+  }
+
+  .link-button img {
+    max-width: 1.5rem;
+    height: 1.3rem;
+    margin: 0.1rem 0.25rem;
+  }
+  
+  .link-button:hover {
+    background-color: #d0d0d0;
+  }
