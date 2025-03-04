@@ -164,6 +164,7 @@ export default class Window extends EventEmitter {
 		this.contentArea = document.createElement('div')
     this.contentArea.className = 'window-content window-body'
     this.contentArea.innerHTML = this.content
+    this.contentArea.style.paddingBottom = '20px'
 
     this.titleBar.onmousedown = e => {
       e.preventDefault()
@@ -172,7 +173,7 @@ export default class Window extends EventEmitter {
 
     this.element.appendChild(this.titleBar)
     this.element.appendChild(this.contentArea)
-
+    this.element.style.paddingBottom = '20px'
     this.element.onclick = () => this.emit('focus', this)
 
     if (this.#config?.initialURL) await this.fetchWindowContents(this.#config.initialURL)
@@ -573,6 +574,28 @@ export default class Window extends EventEmitter {
 
 
   /**
+   * Parse linked stylesheets and append to the content area.
+   * @param {HTMLLinkElement[]} styles
+   */
+  async handleStyles (styles) {
+    const outstyles = []
+
+    for (const style of styles) {
+      try {
+        const response = await fetch(style.href)
+        const styleElement = document.createElement('style')
+        styleElement.textContent = await response.text()
+        outstyles.push(styleElement)
+      } catch (err) {
+        console.error('Failed to load external stylesheet:', err)
+      }
+    }
+
+    outstyles.forEach(style => this.contentArea.appendChild(style))
+  }
+
+
+  /**
    * Fetch the contents of the window from a URL.
    * @param {string} url - URL to fetch window contents from
    */
@@ -582,7 +605,7 @@ export default class Window extends EventEmitter {
     const oldContent = this.content
 
     this.title = 'Loading...'
-    const loadingGif = new HTMLImageElement()
+    const loadingGif = new Image()
     loadingGif.src = this.#config?.styles?.loadingImage || 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExMm42dHA0cWY3b3Y5Yzg5Z3k0Y210a2o4dDk2Z3o0dzBqdjhkZnhhMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7bu3XilJ5BOiSGic/giphy.gif'
     this.contentArea.innerHTML = ''
     this.contentArea.appendChild(loadingGif)
@@ -595,17 +618,16 @@ export default class Window extends EventEmitter {
 
       // Update window content
       this.title = page.querySelector('title')?.textContent || oldTitle
-      this.content = page.querySelector('body')?.innerHTML || oldContent
+      this.titleText.textContent = this.title
+      this.contentArea.innerHTML = ''
+      this.contentArea.appendChild(page.querySelector('body'))
 
       // Handle scripts after content is loaded
       const scripts = Array.from(page.querySelectorAll('script'))
-      const baseUrl = new URL(url).origin
-      scripts.forEach(script => {
-        if (script.src.startsWith('/')) {
-          script.src = `${baseUrl}${script.src}`
-        } 
-      })
+      const styles = Array.from(page.querySelectorAll('link'))
+
       await this.handleScripts(scripts)
+      await this.handleStyles(styles)
     } catch (err) {
       console.error('Failed to fetch window contents:', err)
       this.title = oldTitle

@@ -16,12 +16,12 @@ env.clearSavedState()
  * @type {WindowConfig}
  */
 const config = {
-    height: 300,
-    width: 400,
+    height: 600,
+    width: 600,
     icon: null,
     title: 'Environment Test',
     content: '<p>This is a test</p>',
-    initialURL: '../welcome.html'
+    initialURL: 'views/welcome.html'
 }
 
 const window = env.newWindow(Window, config)
