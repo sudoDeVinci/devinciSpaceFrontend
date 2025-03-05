@@ -9,10 +9,6 @@ body {
     align-items: center;
   }
 
-.memory-card img {
-    max-width: 100%;
-}
-
 .chat-controls {
     padding: 10px;
     border-bottom: 1px solid #ddd;
@@ -42,7 +38,35 @@ body {
     border-radius: 4px;
     cursor: pointer;
   }
-  
-  .chat-message {
-    transition: background-color 0.3s ease;
+
+  .title-bar-controls button[aria-label="Minimize"] {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='12' height='2' viewBox='0 0 6 2' fill='none' xmlns='http://www.w3.org/2000/svg'%3E %3Crect width='12' height='3' fill='black'/%3E %3C/svg%3E") !important;
+    background-repeat: no-repeat;
+    background-position: bottom 3px left 5px !important;
+    width: 25px !important;
+    height: 20px !important;
   }
+
+  .title-bar-controls button[aria-label="Close"] {
+    background-repeat: no-repeat;
+    background-position: bottom 8px left 8px !important;
+    width: 25px !important;
+    height: 20px !important;
+  }
+
+.progress-indicator {
+  width: 100%;
+  height: 20px;
+  background-color: #ddd;
+  border: 1px solid #888;
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.progress-indicator-bar {
+  display: block;
+  height: 100%;
+  background-color: #0a22aa;
+  transition: width 0.3s ease;
+}

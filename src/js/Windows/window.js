@@ -111,7 +111,7 @@ export default class Window extends EventEmitter {
    * @private
    */
   async #createElement () {
-		this.element = document.createElement('div')
+    this.element = document.createElement('div')
     this.element.className = 'window'
     this.element.style.position = 'fixed'
     this.element.style.left = `${this.x}px`
@@ -119,6 +119,8 @@ export default class Window extends EventEmitter {
     this.element.style.width = `${this.width}px`
     this.element.style.height = `${this.height}px`
     this.element.style.overflow = 'hidden'
+    this.element.style.display = 'flex'
+    this.element.style.flexDirection = 'column'
 
     this.titleBar = document.createElement('div')
     this.titleBar.className = 'window-title-bar title-bar'
@@ -128,6 +130,7 @@ export default class Window extends EventEmitter {
     this.titleBar.style.justifyContent = 'space-between'
 		this.titleBar.style.padding = '5px 8px'
     this.titleBar.style.alignItems = 'center'
+    this.titleBar.style.flexShrink = '0'
 
     this.titleText = document.createElement('div')
     this.titleText.className = 'window-title-bar-text title-bar-text'
@@ -164,7 +167,10 @@ export default class Window extends EventEmitter {
 		this.contentArea = document.createElement('div')
     this.contentArea.className = 'window-content window-body'
     this.contentArea.innerHTML = this.content
-    this.contentArea.style.paddingBottom = '20px'
+    this.contentArea.style.overflow = 'auto'
+    this.contentArea.style.flexGrow = '1'
+    this.contentArea.style.position = 'relative'
+    this.contentArea.style.padding = '10px'
 
     this.titleBar.onmousedown = e => {
       e.preventDefault()
@@ -173,7 +179,7 @@ export default class Window extends EventEmitter {
 
     this.element.appendChild(this.titleBar)
     this.element.appendChild(this.contentArea)
-    this.element.style.paddingBottom = '20px'
+
     this.element.onclick = () => this.emit('focus', this)
 
     if (this.#config?.initialURL) await this.fetchWindowContents(this.#config.initialURL)
@@ -444,7 +450,7 @@ export default class Window extends EventEmitter {
 
     // Calculate new dimensions and position
     let newWidth = this.initialWidth
-    let newHeight = this.height
+    let newHeight = this.initialHeight
     let newX = this.x
     let newY = this.y
 
@@ -482,9 +488,6 @@ export default class Window extends EventEmitter {
     this.element.style.width = `${this.width}px`
     this.element.style.height = `${this.height}px`
     this.updatePosition()
-
-    // Adjust content area
-    this.contentArea.style.height = `calc(100% - 37px)`
   }
 
   /**
@@ -551,8 +554,9 @@ export default class Window extends EventEmitter {
   /**
    * Parse scripts as either inline or external and append to the content area.
    * @param {HTMLScriptElement[]} scripts 
+   * @param {HTMLBodyElement} page
    */
-  async handleScripts (scripts) {
+  async handleScripts (scripts, page) {
 
     const outscripts = []
 
@@ -569,15 +573,16 @@ export default class Window extends EventEmitter {
       }
     }
 
-    outscripts.forEach(script => this.contentArea.appendChild(script))
+    outscripts.forEach(script => page.appendChild(script))
   }
 
 
   /**
    * Parse linked stylesheets and append to the content area.
    * @param {HTMLLinkElement[]} styles
+   * @param {HTMLBodyElement} page
    */
-  async handleStyles (styles) {
+  async handleStyles (styles, page) {
     const outstyles = []
 
     for (const style of styles) {
@@ -591,7 +596,7 @@ export default class Window extends EventEmitter {
       }
     }
 
-    outstyles.forEach(style => this.contentArea.appendChild(style))
+    outstyles.forEach(style => page.appendChild(style))
   }
 
 
@@ -600,47 +605,116 @@ export default class Window extends EventEmitter {
    * @param {string} url - URL to fetch window contents from
    */
   async fetchWindowContents(url) {
-
     const oldTitle = this.title
     const oldContent = this.content
 
     this.title = 'Loading...'
-    const loadingGif = new Image()
-    loadingGif.src = this.#config?.styles?.loadingImage || 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExMm42dHA0cWY3b3Y5Yzg5Z3k0Y210a2o4dDk2Z3o0dzBqdjhkZnhhMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7bu3XilJ5BOiSGic/giphy.gif'
+    this.titleText.textContent = this.title
+
+    // Create a container for centering
+    const loadingContainer = document.createElement('div')
+    loadingContainer.style.display = 'flex'
+    loadingContainer.style.justifyContent = 'center'
+    loadingContainer.style.alignItems = 'center'
+    loadingContainer.style.height = '100%'
+    loadingContainer.style.width = '100%'
+
+    // Create progress bar with limited width
+    const loadingBar = document.createElement('div')
+    const innerbar = document.createElement('span')
+    loadingBar.className = 'progress-indicator'
+    loadingBar.style.width = '80%' // Not full width for better appearance
+    loadingBar.style.maxWidth = '400px' // Limit maximum width
+    innerbar.className = 'progress-indicator-bar'
+    innerbar.style.width = '0%'
+    loadingBar.appendChild(innerbar)
+    
+    // Add progress bar to the centering container
+    loadingContainer.appendChild(loadingBar)
+    
+    // Clear content and add the container
     this.contentArea.innerHTML = ''
-    this.contentArea.appendChild(loadingGif)
+    this.contentArea.appendChild(loadingContainer)
+
+    // Function to update progress with animation frame
+    const updateProgress = (percent) => {
+      return new Promise(resolve => {
+        requestAnimationFrame(() => {
+          innerbar.style.width = `${percent}%`
+          setTimeout(resolve, 50)
+        })
+      })
+    }
 
     try {
+      await updateProgress(20)
+
       const response = await fetch(url)
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+      
+      await updateProgress(40)
+      
       const data = await response.text()
       const page = new DOMParser().parseFromString(data, 'text/html')
+
+      await updateProgress(60)
 
       // Update window content
       this.title = page.querySelector('title')?.textContent || oldTitle
       this.titleText.textContent = this.title
-      this.contentArea.innerHTML = ''
-      this.contentArea.appendChild(page.querySelector('body'))
+
+      this.changeTaskbarTitle(this.title)
+      const inbody = page.querySelector('body')
+
+      let body = document.createElement('div')
+      if (inbody) {
+        // Clone nodes to avoid potential issues
+        Array.from(inbody.childNodes).forEach(node => {
+          body.appendChild(node.cloneNode(true))
+        })
+      }
+
+      await updateProgress(75)
 
       // Handle scripts after content is loaded
       const scripts = Array.from(page.querySelectorAll('script'))
       const styles = Array.from(page.querySelectorAll('link'))
 
-      await this.handleScripts(scripts)
-      await this.handleStyles(styles)
+      await this.handleScripts(scripts, body)
+      await updateProgress(85)
+      
+      await this.handleStyles(styles, body)
+      await updateProgress(95)
+
+      this.contentArea.innerHTML = ''
+      this.contentArea.innerHTML = body.innerHTML
+
+      // Complete the progress
+      await updateProgress(100)
+      
     } catch (err) {
       console.error('Failed to fetch window contents:', err)
       this.title = oldTitle
-      this.content = oldContent
+      this.contentArea.innerHTML = oldContent
     }
   }
 
   /**
    * Emit a signal ''exportIconConfig'' to the environment.
-   * @fires IconConfig#exportIconConfig
+   * @fires Window#exportIconConfig
    */
   exportIconConfig () {
     this.emit('exportIconConfig', this)
+  }
+
+  /**
+   * Emit a signal 'Change Taskbar Title' to the environment.
+    * @fires Window#changeTaskbarTitle
+    * 
+    * @param {string} title - The new title for the taskbar
+   */
+  changeTaskbarTitle (title) {
+    this.emit('changeTaskbarTitle', {id: this.id, title: this.title})
   }
 }
 

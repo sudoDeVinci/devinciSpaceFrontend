@@ -3,6 +3,7 @@ import ChatWindow from './Windows/chat.js'
 import EmojiSelector from './Windows/emojiselector.js'
 import Popup from './Windows/timedwindow.js'
 import {Icon} from './Icon.js'
+import MusicPlayerWindow from './Windows/musicplayer.js'
 
 /** @import {WindowConfig} from './Windows/window.js' */
 /** @import {IconConfig} from './Icon.js' */
@@ -18,6 +19,9 @@ export default class Environment {
    * @constructor
    */
   constructor () {
+    /**
+     * 
+     */
     this.windows = new Map()
     this.icons = new Map()
     this.zIndexBase = 1000
@@ -272,12 +276,20 @@ export default class Environment {
   }
 
   addDefaultTaskbarIcons () {
-    const icon1 = this.createTaskbarIcon('Home', Window, null)
+    const icon1 = this.createTaskbarIcon('Welcome', Window, { height: 780,
+                                                              width: 730,
+                                                              icon: null,
+                                                              title: 'Welcome!',
+                                                              content: '<p>This is a test</p>',
+                                                              initialURL: '/welcome'})
     this.taskbar.appendChild(icon1)
-    const icon2 = this.createTaskbarIcon('Projects', Window, null)
+    const icon2 = this.createTaskbarIcon('Projects', Window, {height: 780,
+                                                              width: 730,
+                                                              icon: null,
+                                                              title: 'Projects!',
+                                                              content: '<p>Projects</p>',
+                                                              initialURL: '/projects'})
     this.taskbar.appendChild(icon2)
-    const icon3 = this.createTaskbarIcon('Posts', Window, null)
-    this.taskbar.appendChild(icon3)
     const icon4 = this.createTaskbarIcon('Contact', Window, null)
     this.taskbar.appendChild(icon4)
     const icon5 = this.createTaskbarIcon('Source', Window, null)
@@ -314,10 +326,12 @@ export default class Environment {
         onhover: 'images/clippy_closeup.gif',
         x: 20,
         y: 50,
-        clickhandler: () => this.newWindow(Window, {title: 'Welcome',
-                                                    content: "<img src = 'images/clippy.gif'/>",
-                                                    width: 350,
-                                                    height: 250})
+        clickhandler: () => this.newWindow(Window, {height: 780,
+                                                    width: 730,
+                                                    icon: null,
+                                                    title: 'Welcome!',
+                                                    content: '<p>This is a test</p>',
+                                                    initialURL: '/welcome'})
       },
       {
         title: 'Current Projects',
@@ -326,10 +340,12 @@ export default class Environment {
         x: 20,
         y: 175,
         content: "",
-        clickhandler: () => this.newWindow(Window, {title: 'Current Projects',
-                                                    content: 'Projects go here!',
-                                                    width: 600,
-                                                    height: 400})
+        clickhandler: () => this.newWindow(Window, {height: 780,
+                                                    width: 730,
+                                                    icon: null,
+                                                    title: 'Projects',
+                                                    content: '<p>Projects</p>',
+                                                    initialURL: '/projects'})
       },
       {
         title: 'Music',
@@ -337,10 +353,22 @@ export default class Environment {
         onhover: 'icons/win_controls/music.png',
         x: 20,
         y: 300,
-        clickhandler: () => this.newWindow(Window, {title: 'Music',
-                                                    content: 'Music goes here!',
-                                                    width: 600,
-                                                    height: 400})
+        clickhandler: () => this.newWindow(MusicPlayerWindow, {width: 400,
+                                                    height: 400,
+                                                    icon: null,
+                                                    title: 'Win98 Music Player',
+                                                    content: '<div id="music-player"></div>',
+                                                    tracks: [{title: 'BOOMER',
+                                                              url: '/audio/boomer.wav'},
+                                                            {title: 'In Awe of The Machine',
+                                                              url: '/audio/machine.wav'},
+                                                            {title: 'Jello By WayKool',
+                                                              url: '/audio/jello-waykool.mp3'},
+                                                            {title: 'Weather',
+                                                              url: '/audio/Weather.wav'}],
+                                                    styles: {
+                                                      titlebar_fontsize: '12px'
+                                                    }})
       },
       {
         title: 'Bonzi',
@@ -368,7 +396,7 @@ export default class Environment {
     taskbarItem.whiteSpace = 'nowrap'
     taskbarItem.style.display = 'flex'
     taskbarItem.style.alignItems = 'center'
-    taskbarItem.style.fontSize = '14px'
+    taskbarItem.style.fontSize = '1rem'
     taskbarItem.style.whiteSpace = 'nowrap'
     taskbarItem.style.minWidth = '20px'
     taskbarItem.style.textOverflow = 'ellipsis'
@@ -380,13 +408,13 @@ export default class Environment {
 
   pinWindow (window) {
     const taskbarItem = document.createElement('button')
-    taskbarItem.className = 'taskbar-item'
+    taskbarItem.className = `taskbar-item taskbar-item-${window.id}`
     taskbarItem.style.padding = '0 10px'
     taskbarItem.style.cursor = 'pointer'
     taskbarItem.whiteSpace = 'nowrap'
     taskbarItem.style.display = 'flex'
     taskbarItem.style.alignItems = 'center'
-    taskbarItem.style.fontSize = '14px'
+    taskbarItem.style.fontSize = '1rem'
     taskbarItem.style.whiteSpace = 'nowrap'
     taskbarItem.style.minWidth = '20px'
     taskbarItem.style.textOverflow = 'ellipsis'
@@ -471,11 +499,11 @@ export default class Environment {
 
     // Check if window class is registered in windowTypes
     if (!this.windowTypes.has(WindowClass.name)) {
-      console.error(`${WindowClass.name} class not registered in windowTypes`)
+      console.log(`>> ${WindowClass.name} class not registered in windowTypes`)
       
       // Check for window class inheritence
       if (WindowClass.prototype instanceof Window) {
-        console.warn('Window class is a subclass of Window - Registering new Type')
+        console.log('>>> Window class is a subclass of Window - Registering new Type')
         this.windowTypes.set(WindowClass, {
           width: config.width || 600,
           height: config.height || 400,
@@ -486,7 +514,7 @@ export default class Environment {
           savedstate: config.savedstate || {}
         })
       } else {
-        console.error('Window class is not a subclass of Window - Using default Window class.')
+        console.error('>>>Window class is not a subclass of Window - Using default Window class.')
         WindowClass = Window
       }
 
@@ -500,9 +528,11 @@ export default class Environment {
 
     const newWindow = new WindowClass(id, config)
 
-    Object.entries(config.events).forEach(([event, handler]) => {
-      newWindow.on(event, handler)
-    })
+    if (config.events) {
+      Object.entries(config.events).forEach(([event, handler]) => {
+        newWindow.on(event, handler)
+      })
+    }
 
     // Set up event listeners
     newWindow.on('close', (win) => this.removeWindow(win))
@@ -513,7 +543,8 @@ export default class Environment {
     newWindow.on('dragEnd', () => this.saveState())
     newWindow.on('popup', (data) => this.newWindow(`${crypto.randomUUID()}-${id}`, data, Popup))
     newWindow.on('exportIconConfig', () => this.exportIconConfig(newWindow))
-
+    newWindow.on('changeTaskbarTitle', (data) => {this.icons.get(data.id).textContent = data.title})
+  
     this.windows.set(newWindow.id, newWindow)
     this.environment.appendChild(newWindow.element)
     this.updateZIndices()
