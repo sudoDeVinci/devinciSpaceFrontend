@@ -1,6 +1,6 @@
 # Devinci.Cloud
 
-![Current Visual](local/example.png)
+![Current Visual](local/screenshot.png)
 
 This is the frontend component of personal portfolio website, devinci.cloud. The site is modeled after a Windows 98 desktop, complete with a start menu, taskbar, and desktop icons. The site components are built purely as ES6 modules, and bundled using Vite.
 
