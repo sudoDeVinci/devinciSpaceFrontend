@@ -1,6 +1,6 @@
 # Devinci.Cloud
 
-![Current Visual](local/screenshot.png)
+![Current Visual](./local/screenshot.png)
 
 This is the frontend component of personal portfolio website, devinci.cloud. The site is modeled after a Windows 98 desktop, complete with a start menu, taskbar, and desktop icons. The site components are built purely as ES6 modules, and bundled using Vite.
 
@@ -47,7 +47,7 @@ The Enviornment as an object in the DOM is just a div which spans the entirety o
 
 The Environment is of course made of the different parts which makes up a desktop, viewable below.
 
-![environment](/local/environment.png)
+![environment](./local/environment.png)
 
 In each label, from top to bottom you're given
 1. The name of the piece
@@ -67,7 +67,7 @@ A `Window` as a Javascript class holds the contents of a single page of our site
 
 The Window is made of different parts much like the Environment, though they are much less complex.
 
-![window](/local/window.png)
+![window](./local/window.png)
 
 <br>
 
@@ -105,7 +105,7 @@ env.newWindow(Window, config)
 
 This for example, creates the following:
 
-![Simple Window](/local/simpleWindow.png)
+![Simple Window](./local/simpleWindow.png)
 
 we can also set window positions, and their z-index.
 
@@ -183,10 +183,6 @@ const config = {
 
 env.newWindow(CustomWindowClass, config)
 ```
-
-# The Window Class
-
-The Window class isn
 
 ## TODO
 - [x] Add more custom window types
