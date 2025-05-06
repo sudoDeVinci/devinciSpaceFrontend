@@ -6,7 +6,7 @@ This is the frontend component of personal portfolio website, devinci.cloud. The
 
 Styling for the windows components is done using the [98.css](https://jdan.github.io/98.css/) package for consistency.
 
-The Server component of the site is a custom minimal Flask server and sqlite database, available [here](https://github.com/sudoDeVinci/devincicloud-backend). 
+The Server component of the site is a custom minimal Flask server and sqlite database, available [here](https://github.com/sudoDeVinci/devincicloud-backend).
 
 # Usage
 
@@ -26,21 +26,24 @@ I have defined a number of npm script keywords in the `package.json` file to mak
 If you'd like to run this site locally, you can do so by cloning the repository and running the following:
 
 1. Install dependencies
+
     ```bash
     npm install
     ```
 
 2. Build the site using Vite
+
     ```bash
     npm run build
     ```
 
 3. Start the server
+
     ```bash
     npm run serve
     ```
 
-# The Window Manager
+## The Window Manager
 
 `Windows` and other visual objects in our app like `Icons` sit inside and are managed by the `Environment` class.
 The Enviornment as an object in the DOM is just a div which spans the entirety of the viewport and doesn't scroll. The Environment as a Javascript class manages and manipulates the objects viewable to the user.
@@ -60,7 +63,7 @@ When creating a new Envionment, you just declare a new instance. Environment tak
 const env = new Environment()
 ```
 
-# Windows
+## Windows
 
 `Windows` as objects in the DOM are divs inside the `Environment` with a `fixed` position css style and a hidden overflow.
 A `Window` as a Javascript class holds the contents of a single page of our site. It's draggable, exitable, minimizable, resizable, and can be hidden behind other windows.
@@ -69,12 +72,9 @@ The Window is made of different parts much like the Environment, though they are
 
 ![window](./local/window.png)
 
-<br>
-
 ## Window Configs
 
 Since Windows are simply divs, our main way of controlling them is changing their CSS properties in response to actions. For windows, there are a number of these key values we care about which are defined within the `WindowConfig`:
-
     - width - Window width in pixels
     - height - Window height in pixels
     - title - Window title visible in top left
@@ -126,6 +126,7 @@ env.newWindow(Window, config)
 
 The most basic window types each have a default `WindowConfig` within the `Environment`. These are stored within the `Environment.windowTypes` Map.
 This is a mapping of `Window` sub-types to their default configs
+
 ```js
  /**
  * @property {typeof Window, WindowConfig>} windowTypes - The types of windows that can be created
@@ -184,11 +185,42 @@ const config = {
 env.newWindow(CustomWindowClass, config)
 ```
 
+### Adding Window Content
+
+Remember that content within a window, is stored within the `window-content`/`window-body` classed container. This is the `Window.contentArea` atttribute of a given `Window`. The content within the window is the `innerHTML` of this container.  
+
+A Window's content can be defined a few different ways:
+
+1. During Custom Window Type definition, the default content of a window can specified. All Window types have some form of default content, though most are blank.
+
+2. When creating a Window of a given type, the content can be specified in the `content` field of the `WindowConfig` used to define it, as seen from the previous example.
+
+3. When creating a Window of a given type, the `initialURL` field of the `WindowConfig` to load the page content from a specified URL. This turns our to be useful, wanting to load content from our own server on a given route.
+
+```js
+import {Window} from './Windows/window.js'
+import {WindowConfig} from './Windows/window.js'
+const env = new Environment(true)
+
+const config = {height: 780,
+                width: 730,
+                icon: null,
+                title: 'Projects!',
+                content: '',
+                initialURL: '/projects'}
+
+env.newWindow(Window, config)
+```
+
+This creates a window that loads its inital content from the `/projects` route of our server. The exact function is `Window.fetchWindowContents()`.
+When a page is loaded, all external resources via the `<script>` and `<link>` tags are fetched and inlined into the window body.
+
 ## TODO
+
 - [x] Add more custom window types
 - [ ] Add option to stop windows from being exitable
 - [x] Add music window
 - [x] Add project window
-- [ ] Add contact window 
+- [ ] Add contact window
 - [x] Add more icons
 - [x] Make clock realtime

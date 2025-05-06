@@ -20,7 +20,7 @@ export default class Environment {
    */
   constructor () {
     /**
-     * 
+     *
      */
     this.windows = new Map()
     this.icons = new Map()
@@ -283,14 +283,19 @@ export default class Environment {
                                                               content: '<p>This is a test</p>',
                                                               initialURL: '/welcome'})
     this.taskbar.appendChild(icon1)
-    const icon2 = this.createTaskbarIcon('Projects', Window, {height: 780,
-                                                              width: 730,
-                                                              icon: null,
-                                                              title: 'Projects!',
-                                                              content: '<p>Projects</p>',
-                                                              initialURL: '/projects'})
+    const icon2 = this.createTaskbarIcon('Projects', Window, { height: 780,
+                                                               width: 730,
+                                                               icon: null,
+                                                               title: 'Projects',
+                                                               content: '<p>Projects</p>',
+                                                               initialURL: '/projects'})                                                  
     this.taskbar.appendChild(icon2)
-    const icon4 = this.createTaskbarIcon('Contact', Window, null)
+    const icon4 = this.createTaskbarIcon('Contact', Window, { height: 600,
+                                                              width: 800,
+                                                              icon: null,
+                                                              title: 'Contact',
+                                                              content: '<p>Contact</p>',
+                                                              initialURL: '/contact'})
     this.taskbar.appendChild(icon4)
     const icon5 = this.createTaskbarIcon('Source', Window, null)
     this.taskbar.appendChild(icon5)

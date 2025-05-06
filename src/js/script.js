@@ -54,7 +54,7 @@ const musicWindowConfig = {
 }
 
 const window = env.newWindow(Window, welcomeWindowConfig)
-const projectWindow = env.newWindow(Window, projectWindowConfig)
+// const projectWindow = env.newWindow(Window, projectWindowConfig)
 
 /**
  * Create a new MusicPlayerWindow

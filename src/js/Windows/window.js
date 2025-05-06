@@ -84,6 +84,7 @@ export default class Window extends EventEmitter {
     this.initialY = 0
     this.initialMouseX = 0
     this.initialMouseY = 0
+    this.children = []
 
 
 		this.x = config.x ||  Math.min(
@@ -185,12 +186,19 @@ export default class Window extends EventEmitter {
     if (this.#config?.initialURL) await this.fetchWindowContents(this.#config.initialURL)
 	}
 
+
+
   /**
-   * Get the window configuration.
+   * Return a mix of the current state and the initial config
+   * If the field is not in the config, use the current state
+   * This also extends to optional fields such as events and styles.
    * @returns {WindowConfig} 
    */
   getConfig () {
-    return {...this.#config}
+    /**@type {WindowConfig} */
+    const config = {...this.#config}
+    const state = this.getState()
+    return {...config, ...state}
   }
   
   /**
