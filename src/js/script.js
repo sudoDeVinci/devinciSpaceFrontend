@@ -19,6 +19,8 @@ env.clearSavedState()
 const welcomeWindowConfig = {
     height: 780,
     width: 730,
+    x: 150,
+    y: 150,
     icon: null,
     title: 'Welcome!',
     content: '<p>This is a test</p>',
@@ -28,6 +30,8 @@ const welcomeWindowConfig = {
 const projectWindowConfig = {
     height: 780,
     width: 730,
+    x: 550,
+    y: 150,
     icon: null,
     title: 'Projects!',
     content: '<p>Projects</p>',
@@ -37,6 +41,8 @@ const projectWindowConfig = {
 const musicWindowConfig = {
     width: 400,
     height: 400,
+    x: 1250,
+    y: 55,
     icon: null,
     title: 'Win98 Music Player',
     content: '<div id="music-player"></div>',
@@ -54,7 +60,8 @@ const musicWindowConfig = {
 }
 
 const window = env.newWindow(Window, welcomeWindowConfig)
-// const projectWindow = env.newWindow(Window, projectWindowConfig)
+
+const projectWindow = env.newWindow(Window, projectWindowConfig)
 
 /**
  * Create a new MusicPlayerWindow

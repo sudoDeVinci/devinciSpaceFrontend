@@ -4,6 +4,10 @@
  * @typedef {Object} WindowConfig
  * @property {number} width - Default window width
  * @property {number} height - Default window height
+ * @property {number} x - Default window x position
+ * @property {number} y - Default window y position
+ * @property {number} zIndex - Default window z-index
+ * @property {boolean} isMinimized - Whether the window is minimized
  * @property {string} icon - Icon path
  * @property {string} title - Window title
  * @property {string} content - Window content
