@@ -67,6 +67,7 @@ export default class MusicPlayerWindow extends Window {
     const titleLabel = document.createElement('label');
     titleLabel.textContent = 'Now Playing:';
     titleLabel.style.marginRight = '10px';
+    titleLabel.style.fontSize = '1rem';
     
     this.nowPlayingText = document.createElement('div');
     this.nowPlayingText.style.whiteSpace = 'nowrap';
@@ -79,6 +80,7 @@ export default class MusicPlayerWindow extends Window {
     this.nowPlayingText.style.border = 'inset 2px';
     this.nowPlayingText.style.backgroundColor = 'white';
     this.nowPlayingText.textContent = 'No track selected';
+    this.nowPlayingText.style.fontSize = '1rem';
     
     nowPlayingContainer.appendChild(titleLabel);
     nowPlayingContainer.appendChild(this.nowPlayingText);
@@ -173,6 +175,7 @@ export default class MusicPlayerWindow extends Window {
     const volumeLabel = document.createElement('label');
     volumeLabel.textContent = 'Volume:';
     volumeLabel.style.marginRight = '10px';
+    volumeLabel.style.fontSize = '1rem';
     
     const volumeSlider = document.createElement('input');
     volumeSlider.type = 'range';
@@ -227,6 +230,7 @@ export default class MusicPlayerWindow extends Window {
     listItem.style.padding = '5px';
     listItem.style.cursor = 'pointer';
     listItem.textContent = title;
+    listItem.style.fontSize = '0.8rem';
     
     // Highlight current track
     if (this.tracks.length - 1 === this.currentTrackIndex) {
@@ -276,9 +280,7 @@ export default class MusicPlayerWindow extends Window {
     }
     
     const currentTrack = this.tracks[this.currentTrackIndex];
-    this.nowPlayingText.textContent = this.isPlaying ? 
-      `▶ ${currentTrack.title}` : 
-      `${currentTrack.title}`;
+    this.nowPlayingText.textContent = currentTrack.title;
   }
   
   /**
