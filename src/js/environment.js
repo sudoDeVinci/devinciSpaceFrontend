@@ -283,6 +283,8 @@ export default class Environment {
                                                               content: '<p>This is a test</p>',
                                                               initialURL: '/welcome'})
     this.taskbar.appendChild(icon1)
+
+
     const icon2 = this.createTaskbarIcon('Projects', Window, { height: 780,
                                                                width: 730,
                                                                icon: null,
@@ -290,19 +292,23 @@ export default class Environment {
                                                                content: '<p>Projects</p>',
                                                                initialURL: '/projects'})                                                  
     this.taskbar.appendChild(icon2)
-    const icon4 = this.createTaskbarIcon('Contact', Window, { height: 600,
-                                                              width: 800,
+    
+    
+    const icon4 = this.createTaskbarIcon('Contact', Window, { height: 500,
+                                                              width: 400,
                                                               icon: null,
                                                               title: 'Contact',
                                                               content: '<p>Contact</p>',
                                                               initialURL: '/contact'})
+
     this.taskbar.appendChild(icon4)
-    const icon5 = this.createTaskbarIcon('Source', Window, null)
+    
+
+    const icon5 = this.createTaskbarIcon('Source', null, null, () => globalThis.window.open('https://github.com/sudoDeVinci/devinci.cloud-frontend'))
     this.taskbar.appendChild(icon5)
   }
 
   /**
-   * 
    * @param {IconConfig} config 
    * @returns {Icon} - The created icon
    */
@@ -321,9 +327,7 @@ export default class Environment {
 
   addDefaultIcons () {
 
-    /**
-     * @type {IconConfig[]} - Default icons to be added to the desktop
-     */
+    /**@type {IconConfig[]} - Default icons to be added to the desktop*/
     const defaultIcons = [
       {
         title: 'Welcome',
@@ -340,8 +344,8 @@ export default class Environment {
       },
       {
         title: 'Current Projects',
-        image: 'icons/win_controls/console.png',
-        onhover: 'icons/win_controls/console.png',
+        image: 'icons/console.png',
+        onhover: 'icons/console.png',
         x: 20,
         y: 175,
         content: "",
@@ -354,8 +358,8 @@ export default class Environment {
       },
       {
         title: 'Music',
-        image: 'icons/win_controls/music.png',
-        onhover: 'icons/win_controls/music.png',
+        image: 'icons/music.png',
+        onhover: 'icons/music.png',
         x: 20,
         y: 300,
         clickhandler: () => this.newWindow(MusicPlayerWindow, {width: 400,
@@ -393,7 +397,15 @@ export default class Environment {
     })
   }
 
-  createTaskbarIcon (title, WindowClass, config) {
+  /**
+   * 
+   * @param {string} title 
+   * @param {typeof Window} WindowClass 
+   * @param {WindowConfig} config 
+   * @param {Function} callback 
+   * @returns 
+   */
+  createTaskbarIcon (title, WindowClass, config, callback=null) {
     const taskbarItem = document.createElement('button')
     taskbarItem.className = 'taskbar-item'
     taskbarItem.style.padding = '0 10px'
@@ -407,7 +419,8 @@ export default class Environment {
     taskbarItem.style.textOverflow = 'ellipsis'
     taskbarItem.style.overflow = 'hidden'
     taskbarItem.textContent = title
-    taskbarItem.onclick = () => this.newWindow(WindowClass, config || this.windowTypes.get(WindowClass.name))
+    if (callback) taskbarItem.onclick = callback
+    else taskbarItem.onclick = () => this.newWindow(WindowClass, config || this.windowTypes.get(WindowClass.name))
     return taskbarItem
   }
 

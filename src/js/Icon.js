@@ -4,6 +4,7 @@
  * @property {string} image - The path to the image to be displayed as the icon.
  * @property {string} onhover - The path to the image to be displayed when the icon is hovered over.
  * @property {function} clickhandler - The function to be called when the icon is clicked.
+ * @property {string} initialURL - The initial URL to be opened when the icon is clicked.
  * @property {number} x - The x-coordinate of the icon in px.
  * @property {number} y - The y-coordinate of the icon in px.
  */
@@ -78,6 +79,7 @@ class Icon {
       text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
       word-wrap: break-word;
       max-width: 76px;
+      font-family: "Pixelated MS Sans Serif", Arial;
     `
   }
 

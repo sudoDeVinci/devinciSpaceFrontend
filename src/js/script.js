@@ -30,8 +30,6 @@ const welcomeWindowConfig = {
 const contactWindowConfig = {
     height: 500,
     width: 400,
-    x: 1500,
-    y: 470,
     icon: null,
     title: 'Contact',
     content: '<p>Contact</p>',
@@ -70,9 +68,10 @@ const musicWindowConfig = {
     }
 }
 
-const window = env.newWindow(Window, welcomeWindowConfig)
+//const window = env.newWindow(Window, welcomeWindowConfig)
 
-const projectWindow = env.newWindow(Window, projectWindowConfig)
+//const projectWindow = env.newWindow(Window, projectWindowConfig)
+
 
 const contactWindow = env.newWindow(Window, contactWindowConfig)
 
@@ -80,4 +79,4 @@ const contactWindow = env.newWindow(Window, contactWindowConfig)
  * Create a new MusicPlayerWindow
  * @type {MusicPlayerWindow}
  */
-const musicPlayer = env.newWindow(MusicPlayerWindow, musicWindowConfig)
+//const musicPlayer = env.newWindow(MusicPlayerWindow, musicWindowConfig)
