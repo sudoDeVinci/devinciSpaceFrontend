@@ -127,6 +127,11 @@ export default class Window extends EventEmitter {
     this.element.style.display = 'flex'
     this.element.style.flexDirection = 'column'
 
+    for (const key in this.#config.styles) {
+      this.element.style[key] = this.#config.styles[key]
+    }
+
+
     this.titleBar = document.createElement('div')
     this.titleBar.className = 'window-title-bar title-bar'
     this.titleBar.style.cursor = 'move'
@@ -140,7 +145,7 @@ export default class Window extends EventEmitter {
     this.titleText = document.createElement('div')
     this.titleText.className = 'window-title-bar-text title-bar-text'
     this.titleText.textContent = this.title
-    this.titleText.style.fontSize = this.#config.styles.titlebar_fontsize || '12px'
+    this.titleText.style.fontSize = '1rem'
     this.titleBar.appendChild(this.titleText)
 
 		const buttonContainer = document.createElement('div')
@@ -176,6 +181,7 @@ export default class Window extends EventEmitter {
     this.contentArea.style.flexGrow = '1'
     this.contentArea.style.position = 'relative'
     this.contentArea.style.padding = '10px'
+    this.contentArea.style.minWidth = 'fit-content'
 
     this.titleBar.onmousedown = e => {
       e.preventDefault()

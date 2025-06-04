@@ -27,15 +27,6 @@ const welcomeWindowConfig = {
     initialURL: '/welcome'
 }
 
-const contactWindowConfig = {
-    height: 500,
-    width: 400,
-    icon: null,
-    title: 'Contact',
-    content: '<p>Contact</p>',
-    initialURL: '/contact'
-}
-
 const projectWindowConfig = {
     height: 925,
     width: 730,
@@ -72,6 +63,19 @@ const musicWindowConfig = {
 
 //const projectWindow = env.newWindow(Window, projectWindowConfig)
 
+
+const contactWindowConfig = {
+    height: 500,
+    width: 400,
+    icon: null,
+    title: 'Contact',
+    content: '<p>Contact</p>',
+    initialURL: '/contact',
+    styles: {
+        minHeight: '550px',
+        minWidth: '300px'
+    }
+}
 
 const contactWindow = env.newWindow(Window, contactWindowConfig)
 

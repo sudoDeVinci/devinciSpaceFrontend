@@ -71,18 +71,6 @@ export default class Environment {
         events: {},
         savedstate: {}
       }],
-      [EmojiSelector.name, 
-        {
-          width: 300,
-          height: 400,
-          icon: '',
-          title: 'Emojis',
-          content: '',
-          styles: {},
-          events: {},
-          savedstate: {}
-        }
-      ]
     ]);
 
     // Add custom font for code blocks
@@ -281,7 +269,12 @@ export default class Environment {
                                                               icon: null,
                                                               title: 'Welcome!',
                                                               content: '<p>This is a test</p>',
-                                                              initialURL: '/welcome'})
+                                                              initialURL: '/welcome',
+                                                              styles: {
+                                                                minHeight: '500px',
+                                                                minWidth: '300px'
+                                                              }
+                                                            })
     this.taskbar.appendChild(icon1)
 
 
@@ -290,16 +283,25 @@ export default class Environment {
                                                                icon: null,
                                                                title: 'Projects',
                                                                content: '<p>Projects</p>',
-                                                               initialURL: '/projects'})                                                  
+                                                               initialURL: '/projects',
+                                                                styles: {
+                                                                  minHeight: '450px',
+                                                                  minWidth: '700px'
+                                                                }})                                                  
     this.taskbar.appendChild(icon2)
     
     
-    const icon4 = this.createTaskbarIcon('Contact', Window, { height: 500,
+    const icon4 = this.createTaskbarIcon('Contact', Window, { height: 550,
                                                               width: 400,
                                                               icon: null,
                                                               title: 'Contact',
                                                               content: '<p>Contact</p>',
-                                                              initialURL: '/contact'})
+                                                              initialURL: '/contact',
+                                                              styles: {
+                                                                minHeight: '550px',
+                                                                minWidth: '300px'
+                                                              }
+                                                            })
 
     this.taskbar.appendChild(icon4)
     
