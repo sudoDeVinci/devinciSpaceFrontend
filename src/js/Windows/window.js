@@ -75,8 +75,8 @@ export default class Window extends EventEmitter {
     super()
 		this.#config = config
 		this.id = Id
-		this.width = this.#config.width
-		this.height = this.#config.height
+		this.width = Math.min(this.#config.width, window.innerWidth - 100)
+		this.height = Math.min(this.#config.height, window.innerHeight - 100)
     this.title = this.#config.title
     this.content = this.#config.content
     this.zIndex = this.#config.zIndex || 1
@@ -91,18 +91,8 @@ export default class Window extends EventEmitter {
     this.children = []
 
 
-		this.x = config.x ||  Math.min(
-			Math.max(0,
-							 Math.random() * (window.innerWidth - this.width - 100)),
-							 window.innerWidth - this.width
-			)
-
-		this.y = config.y || Math.min(
-			Math.max(100,
-							 Math.random() * (window.innerHeight - this.height) - 100),
-							 window.innerHeight - this.height
-			)
-
+		this.x = config.x || 70
+		this.y = config.y || 75
 		this.#createElement()
 
 		if (this.isMinimized) this.minimize()

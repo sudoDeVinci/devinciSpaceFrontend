@@ -46,13 +46,13 @@ const musicWindowConfig = {
     icon: null,
     title: 'Win98 Music Player',
     content: '<div id="music-player"></div>',
-    tracks: [{title: 'BOOMER',
+    tracks: [{title: 'Boomer - Violet Mirrors',
               url: '/audio/boomer.wav'},
-             {title: 'In Awe of The Machine',
+             {title: 'In Awe of The Machine - Tadj Cazaubon & Violet Mirrors',
               url: '/audio/machine.wav'},
-             {title: 'Jello By WayKool',
+             {title: 'Jello - WayKool',
               url: '/audio/jello-waykool.mp3'},
-             {title: 'Weather',
+             {title: 'Weather - Tadj Cazaubon & Violet Mirrors',
               url: '/audio/Weather.wav'}],
     styles: {
       titlebar_fontsize: '12px'
