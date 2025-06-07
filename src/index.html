@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>JavaScript Modules</title>
+    <title>Devinci's Space</title>
     <meta charset="UTF-8">
     <link rel="apple-touch-icon" href="/icons/favicon.ico">
     <link rel="favicon.ico" href="/icons/favicon.ico">
@@ -11,7 +11,24 @@
   </head>
   <body>
     <h1 id="header"></h1>
-
-    <script src="js/script.js" type="module"></script>
   </body>
+
+  <script type="module" language="javascript">
+    import Environment from './js/environment.js'
+    import {Window} from './js/Windows/window.js'
+    import MusicPlayerWindow from './js/Windows/musicplayer.js'
+    
+    localStorage.removeItem('windowEnvironmentState')
+    
+    var env = new Environment(true)
+    window.environment = env
+    window.windowType = Window
+    window.musicPlayerType = MusicPlayerWindow
+    window.welcomeWindowConfig = env.defaultConfigs.get('welcome')
+    window.musicWindowConfig = env.defaultConfigs.get('music')
+    window.contactWindowConfig = env.defaultConfigs.get('contact')
+    window.aboutWindowConfig = env.defaultConfigs.get('about')
+
+    window.environment.clearSavedState()
+  </script>
 </html>

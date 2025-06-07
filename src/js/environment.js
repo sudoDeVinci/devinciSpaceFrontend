@@ -71,7 +71,94 @@ export default class Environment {
         events: {},
         savedstate: {}
       }],
-    ]);
+    ])
+
+    /** @property {string, WindowConfig>} - default windows and their configs */
+    this.defaultConfigs = new Map([
+      [
+        "welcome",
+        {
+          height: 755,
+          width: 600,
+          x: 30,
+          y: 50,
+          icon: null,
+          title: 'Welcome!',
+          content: '<p>This is a test</p>',
+          initialURL: '/welcome',
+          styles: {
+              minHeight: '550px',
+              minWidth: '500px'
+          }
+        }
+      ],
+      [
+        "music",
+        {
+          width: 400,
+          height: 400,
+          x: 1500,
+          y: 50,
+          icon: null,
+          title: 'Win98 Music Player',
+          content: '<div id="music-player"></div>',
+          tracks: [{title: 'Boomer - Violet Mirrors',
+                    url: '/audio/boomer.wav'},
+                   {title: 'In Awe of The Machine - Tadj Cazaubon & Violet Mirrors',
+                    url: '/audio/machine.wav'},
+                   {title: 'Jello - WayKool',
+                    url: '/audio/jello-waykool.mp3'},
+                   {title: 'Weather - Tadj Cazaubon & Violet Mirrors',
+                    url: '/audio/Weather.wav'}],
+          styles: {
+            titlebar_fontsize: '12px'
+          }
+        }
+      ],
+      [
+        "projects",
+        {
+          height: 925,
+          width: 730,
+          x: 750,
+          y: 50,
+          icon: null,
+          title: 'Projects!',
+          content: '<p>Projects</p>',
+          initialURL: '/projects'
+        }
+      ],
+      [
+        "contact",
+        {
+          height: 500,
+          width: 400,
+          icon: null,
+          title: 'Contact',
+          content: '<p>Contact</p>',
+          initialURL: '/contact',
+          styles: {
+              minHeight: '550px',
+              minWidth: '300px'
+          }
+        }
+      ],
+      [
+        "about",
+        {
+          height: 400,
+          width: 600,
+          icon: null,
+          title: 'Who I Am',
+          content: '<p>About</p>',
+          initialURL: '/about',
+          styles: {
+            minHeight: '550px',
+            minWidth: '300px'
+          }
+        }
+      ]
+    ])
 
     // Add custom font for code blocks
     const fontLink = document.createElement('link')
@@ -308,6 +395,21 @@ export default class Environment {
 
     const icon5 = this.createTaskbarIcon('Source', null, null, () => globalThis.window.open('https://github.com/sudoDeVinci/devinci.cloud-frontend'))
     this.taskbar.appendChild(icon5)
+
+
+    const icon6 = this.createTaskbarIcon('About', Window, { height: 400,
+                                                            width: 600,
+                                                            icon: null,
+                                                            title: 'Who I Am',
+                                                            content: '<p>About</p>',
+                                                            initialURL: '/about',
+                                                            styles: {
+                                                              minHeight: '550px',
+                                                              minWidth: '300px'
+                                                            }
+                                                          })
+    this.taskbar.appendChild(icon6)
+  
   }
 
   /**
@@ -364,7 +466,8 @@ export default class Environment {
         onhover: 'icons/music.png',
         x: 20,
         y: 300,
-        clickhandler: () => this.newWindow(MusicPlayerWindow, {width: 400,
+        clickhandler: () => this.newWindow(MusicPlayerWindow, {
+                                                    width: 400,
                                                     height: 400,
                                                     icon: null,
                                                     title: 'Win98 Music Player',
@@ -391,6 +494,25 @@ export default class Environment {
                                                     content: 'Literal malware!',
                                                     width: 600,
                                                     height: 400})
+      },
+      {
+        title: 'Doom',
+        image: 'icons/doom.png',
+        onhover: 'icons/doom.png',
+        x: 20,
+        y: 550,
+        clickhandler: () => this.newWindow(Window, {
+                                                    title: 'Doom',
+                                                    height: 600,
+                                                    width: 1000,
+                                                    icon: 'icons/doom.png',
+                                                    content: '<div id="doom-container"></div>',
+                                                    initialURL: '/doom',
+                                                    styles: {
+                                                      minHeight: '800px',
+                                                      minWidth: '800px'
+                                                    }
+                                                  })
       }
     ]
 
@@ -409,6 +531,7 @@ export default class Environment {
    */
   createTaskbarIcon (title, WindowClass, config, callback=null) {
     const taskbarItem = document.createElement('button')
+    taskbarItem.id = `taskbar-item-${title.toLowerCase()}`
     taskbarItem.className = 'taskbar-item'
     taskbarItem.style.padding = '0 10px'
     taskbarItem.style.cursor = 'pointer'
@@ -489,12 +612,12 @@ export default class Environment {
    * @returns {Window} window instance
    */
   newWindow (WindowClass = Window, config = {}) {
-    const window = this.createWindow(crypto.randomUUID(), WindowClass, config)
-    this.pinWindow(window)
-    this.bringToFront(window)
+    const win = this.createWindow(crypto.randomUUID(), WindowClass, config)
+    this.pinWindow(win)
+    this.bringToFront(win)
     this.updateZIndices()
     this.saveState()
-    return window
+    return win
   }
 
   /**

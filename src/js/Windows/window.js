@@ -565,19 +565,32 @@ export default class Window extends EventEmitter {
    * @param {HTMLBodyElement} page
    */
   async handleScripts (scripts, page) {
-
     const outscripts = []
 
     for (const script of scripts) {
-      if (script.src === "") outscripts.push(script)
+      // Handle inline scripts
+      if (script.src === "" || !script.src) {
+        outscripts.push(script.cloneNode(true))
+        continue
+      }
 
       try {
         const response = await fetch(script.src)
         const scriptElement = document.createElement('script')
+        
+        // Preserve original attributes
+        for (const attr of script.attributes) {
+          if (attr.name !== 'src') {
+            scriptElement.setAttribute(attr.name, attr.value)
+          }
+        }
+        
         scriptElement.textContent = await response.text()
         outscripts.push(scriptElement)
       } catch (err) {
         console.error('Failed to load external script:', err)
+        // Fallback to original script with src
+        outscripts.push(script.cloneNode(true))
       }
     }
 
@@ -670,34 +683,18 @@ export default class Window extends EventEmitter {
       // Update window content
       this.title = page.querySelector('title')?.textContent || oldTitle
       this.titleText.textContent = this.title
-
       this.changeTaskbarTitle(this.title)
-      const inbody = page.querySelector('body')
 
-      let body = document.createElement('div')
-      if (inbody) {
-        // Clone nodes to avoid potential issues
-        Array.from(inbody.childNodes).forEach(node => {
-          body.appendChild(node.cloneNode(true))
-        })
+      // Clear content area first
+      this.contentArea.innerHTML = ''
+
+      // Special handling for Doom or other games
+      if (url.includes('/doom')) {
+        await this.handleGameContent(page)
+      } else {
+        await this.handleRegularContent(page)
       }
 
-      await updateProgress(75)
-
-      // Handle scripts after content is loaded
-      const scripts = Array.from(page.querySelectorAll('script'))
-      const styles = Array.from(page.querySelectorAll('link'))
-
-      await this.handleScripts(scripts, body)
-      await updateProgress(85)
-      
-      await this.handleStyles(styles, body)
-      await updateProgress(95)
-
-      this.contentArea.innerHTML = ''
-      this.contentArea.innerHTML = body.innerHTML
-
-      // Complete the progress
       await updateProgress(100)
       
     } catch (err) {
@@ -706,6 +703,110 @@ export default class Window extends EventEmitter {
       this.contentArea.innerHTML = oldContent
     }
   }
+
+  /**
+   * Handle game content (like Doom) with special DOM handling
+   * @param {Document} page - The parsed HTML document
+   */
+  async handleGameContent(page) {
+    const body = page.querySelector('body')
+    if (!body) return
+
+    // Create a container that preserves the game's expected DOM structure
+    const gameContainer = document.createElement('div')
+    gameContainer.style.width = '100%'
+    gameContainer.style.height = '100%'
+    gameContainer.style.position = 'relative'
+
+    // Clone all body children to preserve their structure
+    Array.from(body.children).forEach(child => {
+      gameContainer.appendChild(child.cloneNode(true))
+    })
+
+    // Handle styles first
+    const styles = Array.from(page.querySelectorAll('style, link[rel="stylesheet"]'))
+    for (const style of styles) {
+      if (style.tagName === 'STYLE') {
+        gameContainer.appendChild(style.cloneNode(true))
+      } else if (style.href) {
+        try {
+          const response = await fetch(style.href)
+          const styleElement = document.createElement('style')
+          styleElement.textContent = await response.text()
+          gameContainer.appendChild(styleElement)
+        } catch (err) {
+          console.error('Failed to load stylesheet:', err)
+        }
+      }
+    }
+
+    this.contentArea.appendChild(gameContainer)
+
+    // Handle scripts after DOM is ready
+    await this.handleGameScripts(page.querySelectorAll('script'), gameContainer)
+  }
+
+  /**
+   * Handle scripts for games with proper execution context
+   * @param {NodeList} scripts - Script elements from the page
+   * @param {HTMLElement} container - Container element
+   */
+  async handleGameScripts(scripts, container) {
+    for (const script of scripts) {
+      try {
+        const scriptElement = document.createElement('script')
+        
+        // Copy all attributes
+        Array.from(script.attributes).forEach(attr => {
+          scriptElement.setAttribute(attr.name, attr.value)
+        })
+
+        if (script.src) {
+          // For external scripts, load the content
+          const response = await fetch(script.src)
+          const scriptContent = await response.text()
+          scriptElement.textContent = scriptContent
+          scriptElement.removeAttribute('src') // Remove src to prevent double loading
+        } else {
+          // For inline scripts
+          scriptElement.textContent = script.textContent
+        }
+
+        // Append to the container (not to a separate body element)
+        container.appendChild(scriptElement)
+        
+        // Small delay to ensure script execution order
+        await new Promise(resolve => setTimeout(resolve, 10))
+        
+      } catch (err) {
+        console.error('Failed to load script:', err)
+      }
+    }
+  }
+
+  /**
+   * Handle regular content (non-games)
+   * @param {Document} page - The parsed HTML document
+   */
+  async handleRegularContent(page) {
+    const inbody = page.querySelector('body')
+    let body = document.createElement('div')
+    
+    if (inbody) {
+      Array.from(inbody.childNodes).forEach(node => {
+        body.appendChild(node.cloneNode(true))
+      })
+    }
+
+    const scripts = Array.from(page.querySelectorAll('script'))
+    const styles = Array.from(page.querySelectorAll('link[rel="stylesheet"]'))
+
+    await this.handleScripts(scripts, body)
+    await this.handleStyles(styles, body)
+
+    this.contentArea.innerHTML = body.innerHTML
+  }
+
 
   /**
    * Emit a signal ''exportIconConfig'' to the environment.
