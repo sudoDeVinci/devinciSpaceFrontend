@@ -8,7 +8,7 @@ Styling for the windows components is done using the [98.css](https://jdan.githu
 
 The Server component of the site is a custom minimal Flask server and sqlite database, available [here](https://github.com/sudoDeVinci/devincicloud-backend).
 
-# Usage
+## Usage
 
 I have defined a number of npm script keywords in the `package.json` file to make it easier to run the site locally. Eg. `npm run build` will build the site using Vite via `vite build`, and `npm run serve` will start a local server to serve the site via `vite preview`.
 
@@ -53,6 +53,7 @@ The Environment is of course made of the different parts which makes up a deskto
 ![environment](./local/environment.png)
 
 In each label, from top to bottom you're given
+
 1. The name of the piece
 2. The CSS class/ID name
 3. The attribute name within the Envionment class
@@ -221,6 +222,8 @@ When a page is loaded, all external resources via the `<script>` and `<link>` ta
 - [ ] Add option to stop windows from being exitable
 - [x] Add music window
 - [x] Add project window
-- [ ] Add contact window
+- [x] Add contact window
 - [x] Add more icons
 - [x] Make clock realtime
+- [ ] Add about window
+- [x] Add Doom

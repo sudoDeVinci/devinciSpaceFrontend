@@ -485,17 +485,6 @@ export default class Environment {
                                                     }})
       },
       {
-        title: 'Bonzi',
-        image: 'icons/bonzi.ico',
-        onhover: 'icons/bonzi.ico',
-        x: 20,
-        y: 425,
-        clickhandler: () => this.newWindow(Window, {title: 'Bonzi',
-                                                    content: 'Literal malware!',
-                                                    width: 600,
-                                                    height: 400})
-      },
-      {
         title: 'Doom',
         image: 'icons/doom.png',
         onhover: 'icons/doom.png',
