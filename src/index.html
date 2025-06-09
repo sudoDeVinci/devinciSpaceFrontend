@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="js/style.css">
     <link rel="stylesheet" href="https://unpkg.com/98.css" />
+    <link rel="stylesheet" href="/css/utility.css">
   </head>
   <body>
     <h1 id="header"></h1>
@@ -16,18 +17,22 @@
   <script type="module" language="javascript">
     import Environment from './js/environment.js'
     import {Window} from './js/Windows/window.js'
-    import MusicPlayerWindow from './js/Windows/musicplayer.js'
+    import MusicPlayer from './js/Windows/musicplayer.js'
+    import Popup from './js/Windows/timedwindow.js'
     
     localStorage.removeItem('windowEnvironmentState')
     
     var env = new Environment(true)
     window.environment = env
     window.windowType = Window
-    window.musicPlayerType = MusicPlayerWindow
+    window.musicPlayerType = MusicPlayer
+    window.popupType = Popup
     window.welcomeWindowConfig = env.defaultConfigs.get('welcome')
     window.musicWindowConfig = env.defaultConfigs.get('music')
     window.contactWindowConfig = env.defaultConfigs.get('contact')
     window.aboutWindowConfig = env.defaultConfigs.get('about')
+    window.projectsWindowConfig = env.defaultConfigs.get('projects')
+    window.popupWindowConfig = env.defaultConfigs.get('popup')
 
     window.environment.clearSavedState()
   </script>

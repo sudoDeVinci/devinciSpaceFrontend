@@ -1,94 +1,78 @@
 import {Window} from './Windows/window.js'
-import ChatWindow from './Windows/chat.js'
-import EmojiSelector from './Windows/emojiselector.js'
 import Popup from './Windows/timedwindow.js'
 import {Icon} from './Icon.js'
-import MusicPlayerWindow from './Windows/musicplayer.js'
+import MusicPlayer from './Windows/musicplayer.js'
 
 /** @import {WindowConfig} from './Windows/window.js' */
 /** @import {IconConfig} from './Icon.js' */
+/** @import {TaskbarConfig} from './Taskbar.js'*/
+
+
+
+/**
+ * @typedef EnvironmentConfig
+ * @property {string} bgc - The background color of the environment.
+ * @property {TaskbarConfig} taskbar - The configuration for the taskbar.
+ * @property {Map<typeof Window, WindowConfig>} windowTypes - The types of windows that can be created and their defaults.
+ * @property {Map<string, WindowConfig>} defaultConfigs - The default configurations for windows.
+ */
+
+
 
 /**
  * Environment class for managing windows and icons in a desktop-like environment.
- * @class
+ * @class Environment
+ * @constructor
+ * @public
  */
 export default class Environment {
-
-  /**
-   * @returns {Environment}
-   * @constructor
-   */
   constructor () {
     /**
-     *
+     * A Map of windows by id
+     * @type {Map<string, Window>}
      */
     this.windows = new Map()
-    this.icons = new Map()
-    this.zIndexBase = 1000
-    this.username = 'Anonymous-' + Math.floor(Math.random() * 1000)
 
-    // Set default colors
+    /**
+     * A Map of icons by title
+     * @type {Map<string, Icon>}
+     */
+    this.icons = new Map()
+
+    /**@type {number}*/
+    this.zIndexBase = 100
+    /**@type {string}*/
     this.background_color = '#FAF9F6'
+    /**@type {string}*/
     this.taskbar_background_color = '#c0c0c0'
+    /**@type {string}*/
     this.taskbar_text_color = '#fff'
 
     /**
-     * @property {typeof Window, WindowConfig>} windowTypes - The types of windows that can be created
+     * @property {typeof Window, WindowConfig>} windowTypes - The types of windows that can be created and their defaults.
      */
     this.windowTypes = new Map([
-      [Window.name, {
-        width: 600,
-        height: 400,
-        icon: '',
-        title: 'Window',
-        content: '',
-        styles: {},
-        events: {},
-        savedstate: {}
-      }],
-      [ChatWindow.name, {
-        width: 600,
-        height: 400,
-        icon: '',
-        title: 'Chat',
-        channel: 'general',
-        username: 'Anonymous',
-        content: '',
-        styles: {},
-        events: {
-          toggleEmojis: () => this.toggleEmojis(window),
-          usernameChanged: (username) => {this.username = username}
-        },
-        savedstate: {}
-      }],
-      [Popup.name, {
-        width: 300,
-        height: 200,
-        icon: '',
-        title: 'Popup',
-        content: '',
-        styles: {},
-        events: {},
-        savedstate: {}
-      }],
+      [Window.name, {}],
+      [Popup.name, {}],
+      [MusicPlayer.name, {}]
     ])
 
-    /** @property {string, WindowConfig>} - default windows and their configs */
+    /** @type {Map<string, WindowConfig>} - default windows and their configs */
     this.defaultConfigs = new Map([
       [
         "welcome",
         {
-          height: 755,
-          width: 600,
-          x: 30,
+          height: 600,
+          width: 500,
+          x: 50,
           y: 50,
           icon: null,
           title: 'Welcome!',
           content: '<p>This is a test</p>',
           initialURL: '/welcome',
           styles: {
-              minHeight: '550px',
-              minWidth: '500px'
+            minHeight: '10px',
+            minWidth: '10px'
           }
         }
       ],
@@ -97,7 +81,7 @@ export default class Environment {
         {
           width: 400,
           height: 400,
-          x: 1500,
+          x: 50,
           y: 50,
           icon: null,
           title: 'Win98 Music Player',
@@ -107,11 +91,15 @@ export default class Environment {
                    {title: 'In Awe of The Machine - Tadj Cazaubon & Violet Mirrors',
                     url: '/audio/machine.wav'},
                    {title: 'Jello - WayKool',
-                    url: '/audio/jello-waykool.mp3'},
+                    url: '/audio/jello.mp3'},
                    {title: 'Weather - Tadj Cazaubon & Violet Mirrors',
-                    url: '/audio/Weather.wav'}],
+                    url: '/audio/Weather.wav'},
+                   {title: 'Bill_Nye - Tadj Cazaubon & Violet Mirrors',
+                    url: '/audio/Bill_Nye.wav'}],
           styles: {
-            titlebar_fontsize: '12px'
+            titlebar_fontsize: '12px',
+            minHeight: '10px',
+            minWidth: '10px'
           }
         }
       ],
@@ -120,7 +108,7 @@ export default class Environment {
         {
           height: 925,
           width: 730,
-          x: 750,
+          x: 50,
           y: 50,
           icon: null,
           title: 'Projects!',
@@ -146,7 +134,7 @@ export default class Environment {
       [
         "about",
         {
-          height: 400,
+          height: 600,
           width: 600,
           icon: null,
           title: 'Who I Am',
@@ -157,14 +145,19 @@ export default class Environment {
             minWidth: '300px'
           }
         }
+      ],
+      [
+        "popup",
+        {
+          height: 100,
+          width: 300,
+          icon: "/icons/messages.png",
+          title: 'Message',
+          content: '<p>This is a popup message</p>',
+          styles: {}
+        }
       ]
     ])
-
-    // Add custom font for code blocks
-    const fontLink = document.createElement('link')
-    fontLink.href = 'https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap'
-    fontLink.rel = 'stylesheet'
-    document.head.appendChild(fontLink)
 
     // Page Environment Container
     this.environment = document.createElement('div')
@@ -237,7 +230,6 @@ export default class Environment {
     time.textContent = this.datetime.toLocaleTimeString()
     time.style.fontSize = '14px'
     time.style.color = 'rgb(0, 0, 0)'
-    time.style.fontFamily = '"Pixelated MS Sans Serif", Arial'
     time.style.whiteSpace = 'nowrap'
     time.style.overflow = 'hidden'
     time.style.textOverflow = 'ellipsis'
@@ -351,65 +343,20 @@ export default class Environment {
   }
 
   addDefaultTaskbarIcons () {
-    const icon1 = this.createTaskbarIcon('Welcome', Window, { height: 780,
-                                                              width: 730,
-                                                              icon: null,
-                                                              title: 'Welcome!',
-                                                              content: '<p>This is a test</p>',
-                                                              initialURL: '/welcome',
-                                                              styles: {
-                                                                minHeight: '500px',
-                                                                minWidth: '300px'
-                                                              }
-                                                            })
+    const icon1 = this.createTaskbarIcon('Welcome', Window, this.defaultConfigs.get('welcome'))
     this.taskbar.appendChild(icon1)
 
-
-    const icon2 = this.createTaskbarIcon('Projects', Window, { height: 780,
-                                                               width: 730,
-                                                               icon: null,
-                                                               title: 'Projects',
-                                                               content: '<p>Projects</p>',
-                                                               initialURL: '/projects',
-                                                                styles: {
-                                                                  minHeight: '450px',
-                                                                  minWidth: '700px'
-                                                                }})                                                  
+    const icon2 = this.createTaskbarIcon('Projects', Window, this.defaultConfigs.get('projects'))                                                  
     this.taskbar.appendChild(icon2)
     
-    
-    const icon4 = this.createTaskbarIcon('Contact', Window, { height: 550,
-                                                              width: 400,
-                                                              icon: null,
-                                                              title: 'Contact',
-                                                              content: '<p>Contact</p>',
-                                                              initialURL: '/contact',
-                                                              styles: {
-                                                                minHeight: '550px',
-                                                                minWidth: '300px'
-                                                              }
-                                                            })
-
+    const icon4 = this.createTaskbarIcon('Contact', Window, this.defaultConfigs.get('contact'))
     this.taskbar.appendChild(icon4)
-    
 
     const icon5 = this.createTaskbarIcon('Source', null, null, () => globalThis.window.open('https://github.com/sudoDeVinci/devinci.cloud-frontend'))
     this.taskbar.appendChild(icon5)
 
-
-    const icon6 = this.createTaskbarIcon('About', Window, { height: 400,
-                                                            width: 600,
-                                                            icon: null,
-                                                            title: 'Who I Am',
-                                                            content: '<p>About</p>',
-                                                            initialURL: '/about',
-                                                            styles: {
-                                                              minHeight: '550px',
-                                                              minWidth: '300px'
-                                                            }
-                                                          })
+    const icon6 = this.createTaskbarIcon('About', Window, this.defaultConfigs.get('about'))
     this.taskbar.appendChild(icon6)
-  
   }
 
   /**
@@ -439,12 +386,7 @@ export default class Environment {
         onhover: 'images/clippy_closeup.gif',
         x: 20,
         y: 50,
-        clickhandler: () => this.newWindow(Window, {height: 780,
-                                                    width: 730,
-                                                    icon: null,
-                                                    title: 'Welcome!',
-                                                    content: '<p>This is a test</p>',
-                                                    initialURL: '/welcome'})
+        clickhandler: () => this.newWindow(Window, this.defaultConfigs.get('welcome'))
       },
       {
         title: 'Current Projects',
@@ -453,12 +395,7 @@ export default class Environment {
         x: 20,
         y: 175,
         content: "",
-        clickhandler: () => this.newWindow(Window, {height: 780,
-                                                    width: 730,
-                                                    icon: null,
-                                                    title: 'Projects',
-                                                    content: '<p>Projects</p>',
-                                                    initialURL: '/projects'})
+        clickhandler: () => this.newWindow(Window, this.defaultConfigs.get('projects'))
       },
       {
         title: 'Music',
@@ -466,42 +403,15 @@ export default class Environment {
         onhover: 'icons/music.png',
         x: 20,
         y: 300,
-        clickhandler: () => this.newWindow(MusicPlayerWindow, {
-                                                    width: 400,
-                                                    height: 400,
-                                                    icon: null,
-                                                    title: 'Win98 Music Player',
-                                                    content: '<div id="music-player"></div>',
-                                                    tracks: [{title: 'Boomer - Violet Mirrors',
-                                                                url: '/audio/boomer.wav'},
-                                                              {title: 'In Awe of The Machine - Tadj Cazaubon & Violet Mirrors',
-                                                                url: '/audio/machine.wav'},
-                                                              {title: 'Jello - WayKool',
-                                                                url: '/audio/jello-waykool.mp3'},
-                                                              {title: 'Weather - Tadj Cazaubon & Violet Mirrors',
-                                                                url: '/audio/Weather.wav'}],
-                                                    styles: {
-                                                      titlebar_fontsize: '12px'
-                                                    }})
+        clickhandler: () => this.newWindow(MusicPlayer, this.defaultConfigs.get('music'))
       },
       {
         title: 'Doom',
         image: 'icons/doom.png',
         onhover: 'icons/doom.png',
         x: 20,
-        y: 550,
-        clickhandler: () => this.newWindow(Window, {
-                                                    title: 'Doom',
-                                                    height: 600,
-                                                    width: 1000,
-                                                    icon: 'icons/doom.png',
-                                                    content: '<div id="doom-container"></div>',
-                                                    initialURL: '/doom',
-                                                    styles: {
-                                                      minHeight: '800px',
-                                                      minWidth: '800px'
-                                                    }
-                                                  })
+        y: 425,
+        clickhandler: () => this.newWindow(Window, this.defaultConfigs.get('doom'))
       }
     ]
 
@@ -559,6 +469,10 @@ export default class Environment {
     this.updateScrollButtons()
   }
 
+  /**
+   * Destroy a window instance and remove its icon from the taskbar.
+   * @param {Window} window 
+   */
   removeWindow (window) {
     console.log('Removing window:', window.id)
     if (this.windows.has(window.id)) {
@@ -711,6 +625,10 @@ export default class Environment {
     }
   }
 
+  /**
+   * Bring a window to the front of the z-index stack.
+   * @param {Window} window 
+   */
   bringToFront (window) {
     const windowArray = Array.from(this.windows.values())
     const index = windowArray.indexOf(window)
@@ -763,4 +681,6 @@ export default class Environment {
   clearSavedState () {
     localStorage.removeItem('windowEnvironmentState')
   }
+
+
 }

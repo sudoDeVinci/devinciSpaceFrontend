@@ -4,7 +4,7 @@ import { Window } from './window.js';
  * Windows 98 style music player window component
  * @extends Window
  */
-export default class MusicPlayerWindow extends Window {
+export default class MusicPlayer extends Window {
   /**
    * Create a new MusicPlayer window
    * @param {string} id - Window identifier
@@ -65,7 +65,7 @@ export default class MusicPlayerWindow extends Window {
     nowPlayingContainer.style.marginBottom = '10px';
     
     const titleLabel = document.createElement('label');
-    titleLabel.textContent = 'Now Playing:';
+    titleLabel.textContent = 'Playing:';
     titleLabel.style.marginRight = '10px';
     titleLabel.style.fontSize = '1rem';
     
@@ -80,7 +80,7 @@ export default class MusicPlayerWindow extends Window {
     this.nowPlayingText.style.border = 'inset 2px';
     this.nowPlayingText.style.backgroundColor = 'white';
     this.nowPlayingText.textContent = 'No track selected';
-    this.nowPlayingText.style.fontSize = '1rem';
+    this.nowPlayingText.style.fontSize = '0.75rem';
     
     nowPlayingContainer.appendChild(titleLabel);
     nowPlayingContainer.appendChild(this.nowPlayingText);
@@ -230,7 +230,7 @@ export default class MusicPlayerWindow extends Window {
     listItem.style.padding = '5px';
     listItem.style.cursor = 'pointer';
     listItem.textContent = title;
-    listItem.style.fontSize = '0.8rem';
+    listItem.style.fontSize = '0.75rem';
     
     // Highlight current track
     if (this.tracks.length - 1 === this.currentTrackIndex) {

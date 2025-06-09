@@ -37,12 +37,13 @@ export default class Popup extends Window {
     `
 
     // Add icon/emoji based on content type (success, warning, etc)
-    const icon = document.createElement('div')
+    /**@type {HTMLImageElement} */
+    const icon = document.createElement('img')
     icon.style.cssText = `
       font-size: 3em;
       margin-bottom: 10px;
+      src: ${this.config.icon || 'https://via.placeholder.com/50'};
     `
-    icon.textContent = this.getAppropriateIcon(content.type)
 
     const message = document.createElement('div')
     message.style.cssText = `
@@ -62,14 +63,6 @@ export default class Popup extends Window {
 
     const duration = 15
     this.timer.start(duration)
-  }
-
-  getAppropriateIcon (type) {
-    if (type.toLowerCase() === 'win') return '🏆'
-    else if (type.toLowerCase() === 'time') return '⏰'
-    else if (type.toLowerCase() === 'star') return '🌟'
-    else if (type.toLowerCase() === 'warning') return '⚠️'
-    else return 'ℹ️'
   }
 
   updateTitleBarDisplay (seconds) {

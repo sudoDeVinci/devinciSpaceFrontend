@@ -51,6 +51,7 @@ class Icon {
       flex-direction: column;
       align-items: center;
       width: 80px;
+      height: 80px;
       cursor: pointer;
       padding: 8px;
     `
@@ -75,11 +76,11 @@ class Icon {
     this.label.style.cssText = `
       color: white;
       text-align: center;
-      font-size: 13px;
+      font-size: 0.75rem;
       text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
       word-wrap: break-word;
       max-width: 76px;
-      font-family: "Pixelated MS Sans Serif", Arial;
+      font-weight: bold;
     `
   }
 

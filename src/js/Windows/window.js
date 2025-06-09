@@ -68,7 +68,7 @@ export default class Window extends EventEmitter {
 
   /**
    * Create a new Window instance with the provided configuration.
-   * @param {string} id - The window identifier
+   * @param {string} Id - The window identifier
    * @param {WindowConfig} config - The window configuration
    */
   constructor (Id, config) {
@@ -308,7 +308,7 @@ export default class Window extends EventEmitter {
 
     // Constrain to viewport bounds
     newX = Math.max(0, Math.min(newX, window.innerWidth - this.width))
-    newY = Math.max(0, Math.min(newY, window.innerHeight - this.height))
+    newY = Math.max(20, Math.min(newY, window.innerHeight - this.height))
 
     this.x = newX
     this.y = newY
