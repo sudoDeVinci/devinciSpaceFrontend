@@ -86,16 +86,16 @@ export default class Environment {
           icon: null,
           title: 'Win98 Music Player',
           content: '<div id="music-player"></div>',
-          tracks: [{title: 'Boomer - Violet Mirrors',
-                    url: '/audio/boomer.wav'},
-                   {title: 'In Awe of The Machine - Tadj Cazaubon & Violet Mirrors',
-                    url: '/audio/machine.wav'},
+          tracks: [{title: 'Bill_Nye - Tadj Cazaubon & Violet Mirrors',
+                    url: '/audio/Bill_Nye.wav'},
                    {title: 'Jello - WayKool',
                     url: '/audio/jello.mp3'},
                    {title: 'Weather - Tadj Cazaubon & Violet Mirrors',
                     url: '/audio/Weather.wav'},
-                   {title: 'Bill_Nye - Tadj Cazaubon & Violet Mirrors',
-                    url: '/audio/Bill_Nye.wav'}],
+                   {title: 'Boomer - Violet Mirrors',
+                    url: '/audio/boomer.wav'},
+                   {title: 'In Awe of The Machine - Tadj Cazaubon & Violet Mirrors',
+                    url: '/audio/machine.wav'}],
           styles: {
             titlebar_fontsize: '12px',
             minHeight: '10px',
@@ -155,6 +155,21 @@ export default class Environment {
           title: 'Message',
           content: '<p>This is a popup message</p>',
           styles: {}
+        }
+      ],
+      [
+        "doom",
+        {
+          height: 600,
+          width: 1000,
+          icon: "icons/doom.png",
+          title: 'Doom',
+          content: '<p>Doom</p>',
+          initialURL: '/doom',
+          styles: {
+            minHeight: '10px',
+            minWidth: '10px'
+          }
         }
       ]
     ])
@@ -444,7 +459,7 @@ export default class Environment {
     taskbarItem.style.overflow = 'hidden'
     taskbarItem.textContent = title
     if (callback) taskbarItem.onclick = callback
-    else taskbarItem.onclick = () => this.newWindow(WindowClass, config || this.windowTypes.get(WindowClass.name))
+    else taskbarItem.onclick = () => this.newWindow(WindowClass, config)
     return taskbarItem
   }
 
@@ -557,7 +572,7 @@ export default class Environment {
           icon: config.icon || '',
           styles: config.styles || {},
           events: config.events || {},
-          savedstate: config.savedstate || {}
+          savedstate: config.savedState || {}
         })
       } else {
         console.error('>>>Window class is not a subclass of Window - Using default Window class.')
@@ -599,31 +614,6 @@ export default class Environment {
     return newWindow
   }
 
-  /**
-   * Slapjob function to toggle emojiselector for chat windows.
-   * This is bad and should be removed in favour of a more standard solution.
-   * @param {*} window 
-   */
-  toggleEmojis (window) {
-    if (!window.emojiSelector) {
-      window.emojiSelector = this.createWindow(
-        `emoji-${this.id}`,
-        '',
-        '',
-        300,
-        400,
-        null,
-        EmojiSelector
-      )
-
-      window.initEmojiSelector()
-      this.bringToFront(window.emojiSelector)
-    } else {
-      // If already open, close it
-      window.emojiSelector.emit('close')
-      window.emojiSelector = null
-    }
-  }
 
   /**
    * Bring a window to the front of the z-index stack.
