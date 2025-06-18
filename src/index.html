@@ -34,6 +34,10 @@
     window.projectsWindowConfig = env.defaultConfigs.get('projects')
     window.popupWindowConfig = env.defaultConfigs.get('popup')
 
+    const welcomeconfig = window.welcomeWindowConfig
+    welcomeconfig['x'] = 200
+    window.environment.newWindow(Window, window.welcomeWindowConfig)
+
     window.environment.clearSavedState()
   </script>
 </html>
