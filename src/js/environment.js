@@ -135,7 +135,7 @@ export default class Environment {
         "about",
         {
           height: 600,
-          width: 600,
+          width: 550,
           icon: null,
           title: 'Who I Am',
           content: '<p>About</p>',
