@@ -63,7 +63,7 @@ export default class Environment {
         "welcome",
         {
           height: 600,
-          width: 500,
+          width: 600,
           x: 50,
           y: 50,
           icon: null,
@@ -86,16 +86,40 @@ export default class Environment {
           icon: null,
           title: 'Win98 Music Player',
           content: '<div id="music-player"></div>',
-          tracks: [{title: 'Bill_Nye - Tadj Cazaubon & Violet Mirrors',
-                    url: '/audio/Bill_Nye.wav'},
-                   {title: 'Jello - WayKool',
-                    url: '/audio/jello.mp3'},
-                   {title: 'Weather - Tadj Cazaubon & Violet Mirrors',
-                    url: '/audio/Weather.wav'},
-                   {title: 'Boomer - Violet Mirrors',
-                    url: '/audio/boomer.wav'},
-                   {title: 'In Awe of The Machine - Tadj Cazaubon & Violet Mirrors',
-                    url: '/audio/machine.wav'}],
+          tracks: [
+            {
+              title: 'Bill_Nye - Tadj Cazaubon & Violet Mirrors',
+              url: '/audio/Bill_Nye.wav'
+            },
+            {
+              title: 'Grey Skies - Molly',
+              url: '/audio/grey_skies.wav'
+            },
+            {
+              title: 'Jello - WayKool',
+              url: '/audio/jello.mp3'
+            },
+            {
+              title: 'Discotheque Diner - Molly',
+              url: '/audio/discotheque_diner.wav'
+            },
+            {
+              title: 'Weather - Tadj Cazaubon & Violet Mirrors',
+              url: '/audio/Weather.wav'
+            },
+            {
+              title: 'Jonathan Seagull - Molly',
+              url: '/audio/jonathan_seagull.wav'
+            },
+            {
+              title: 'Boomer - Violet Mirrors',
+              url: '/audio/boomer.wav'
+            },
+            {
+              title: 'In Awe of The Machine - Tadj Cazaubon & Violet Mirrors',
+              url: '/audio/machine.wav'
+            }
+                  ],
           styles: {
             titlebar_fontsize: '12px',
             minHeight: '10px',
@@ -370,7 +394,7 @@ export default class Environment {
     const icon5 = this.createTaskbarIcon('Source', null, null, () => globalThis.window.open('https://github.com/sudoDeVinci/devinci.cloud-frontend'))
     this.taskbar.appendChild(icon5)
 
-    const icon6 = this.createTaskbarIcon('About', Window, this.defaultConfigs.get('about'))
+    const icon6 = this.createTaskbarIcon('About Me', Window, this.defaultConfigs.get('about'))
     this.taskbar.appendChild(icon6)
   }
 
