@@ -47,9 +47,9 @@ export default class MusicPlayer extends Window {
     
     // Create player elements
     this.createNowPlaying();
+    this.createVolumeControl();
     this.createControls();
     this.createPlaylist();
-    this.createVolumeControl();
     
     // Set initial states
     this.updateNowPlaying();
@@ -167,32 +167,40 @@ export default class MusicPlayer extends Window {
    * Creates the volume control
    */
   createVolumeControl() {
-    const volumeContainer = document.createElement('div');
-    volumeContainer.className = 'field-row';
-    volumeContainer.style.padding = '5px';
-    volumeContainer.style.alignItems = 'center';
+    const volumeContainer = document.createElement('div')
+    volumeContainer.className = 'field-row'
+    volumeContainer.style.padding = '5px'
+    volumeContainer.style.alignItems = 'center'
     
-    const volumeLabel = document.createElement('label');
-    volumeLabel.textContent = 'Volume:';
-    volumeLabel.style.marginRight = '10px';
-    volumeLabel.style.fontSize = '1rem';
-    
-    const volumeSlider = document.createElement('input');
-    volumeSlider.type = 'range';
-    volumeSlider.min = '0';
-    volumeSlider.max = '100';
-    volumeSlider.value = '80';
-    volumeSlider.style.flexGrow = '1';
+    const volumeLabel = document.createElement('button')
+    volumeLabel.style.marginRight = '0.5rem'
+    volumeLabel.style.maxWidth = '25px'
+    volumeLabel.style.maxHeight = '25px'
+
+    const volumeIcon = document.createElement('img')
+    volumeIcon.src = '/icons/speaker.png'
+    volumeIcon.style.maxWidth = volumeLabel.style.maxWidth
+    volumeIcon.style.maxHeight = volumeLabel.style.maxHeight
+    volumeIcon.style.objectFit = 'contain'
+    volumeLabel.appendChild(volumeIcon)
+
+
+    const volumeSlider = document.createElement('input')
+    volumeSlider.type = 'range'
+    volumeSlider.min = '0'
+    volumeSlider.max = '100'
+    volumeSlider.value = '60'
+    volumeSlider.style.flexGrow = '1'
     volumeSlider.addEventListener('input', () => {
-      this.audio.volume = parseInt(volumeSlider.value) / 100;
+      this.audio.volume = parseInt(volumeSlider.value) / 100
     });
     
     // Set initial volume
-    this.audio.volume = 0.8;
+    this.audio.volume = 0.8
     
-    volumeContainer.appendChild(volumeLabel);
-    volumeContainer.appendChild(volumeSlider);
-    this.contentArea.appendChild(volumeContainer);
+    volumeContainer.appendChild(volumeLabel)
+    volumeContainer.appendChild(volumeSlider)
+    this.contentArea.appendChild(volumeContainer)
   }
   
   /**
