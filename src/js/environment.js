@@ -62,8 +62,8 @@ export default class Environment {
       [
         "welcome",
         {
-          height: 600,
-          width: 600,
+          height: 700,
+          width: 500,
           x: 50,
           y: 50,
           icon: null,
@@ -82,9 +82,9 @@ export default class Environment {
           width: 400,
           height: 400,
           x: 50,
-          y: 50,
+          y: 100,
           icon: null,
-          title: 'Win98 Music Player',
+          title: 'Music Player',
           content: '<div id="music-player"></div>',
           tracks: [
             {
@@ -132,8 +132,8 @@ export default class Environment {
         {
           height: 925,
           width: 730,
-          x: 50,
-          y: 50,
+          x: 250,
+          y: 150,
           icon: null,
           title: 'Projects!',
           content: '<p>Projects</p>',
@@ -562,6 +562,7 @@ export default class Environment {
     return win
   }
 
+  
   /**
    * Factory method for creating windows by passed type.
    * @param {string} id - unique window id

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="js/style.css">
     <link rel="stylesheet" href="https://unpkg.com/98.css" />
     <link rel="stylesheet" href="/css/utility.css">
+    <script src="https://unpkg.com/webamp"></script>
   </head>
   <body>
     <h1 id="header"></h1>
@@ -21,8 +22,9 @@
     import Popup from './js/Windows/timedwindow.js'
     
     localStorage.removeItem('windowEnvironmentState')
-    
-    var env = new Environment(true)
+
+    const env = new Environment(true)
+    /**@type {Environment} */
     window.environment = env
     window.windowType = Window
     window.musicPlayerType = MusicPlayer
@@ -34,10 +36,17 @@
     window.projectsWindowConfig = env.defaultConfigs.get('projects')
     window.popupWindowConfig = env.defaultConfigs.get('popup')
 
-    const welcomeconfig = window.welcomeWindowConfig
-    welcomeconfig['x'] = 200
-    window.environment.newWindow(Window, window.welcomeWindowConfig)
 
-    window.environment.clearSavedState()
+    window.aboutWindowConfig['x'] = 120
+    window.aboutWindowConfig['y'] = 80
+    env.newWindow(Window, window.aboutWindowConfig)
+
+    window.welcomeWindowConfig['x'] = 700
+    window.welcomeWindowConfig['y'] = 60
+    env.newWindow(Window, window.welcomeWindowConfig)
+
+    window.musicWindowConfig['x'] = 1000
+    window.musicWindowConfig['y'] = 300
+    env.newWindow(MusicPlayer, window.musicWindowConfig)
   </script>
 </html>
