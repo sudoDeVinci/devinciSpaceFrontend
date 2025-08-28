@@ -225,5 +225,7 @@ When a page is loaded, all external resources via the `<script>` and `<link>` ta
 - [x] Add contact window
 - [x] Add more icons
 - [x] Make clock realtime
-- [ ] Add about window
+- [x] Add about window
 - [x] Add Doom
+- [ ] Add EVEN MORE icons
+- [ ] Add blog window
