@@ -9,13 +9,17 @@
     <link rel="stylesheet" href="js/style.css">
     <link rel="stylesheet" href="https://unpkg.com/98.css" />
     <link rel="stylesheet" href="/css/utility.css">
-    <script src="https://unpkg.com/webamp"></script>
+    <link rel="stylesheet" href="/css/loader.css">
   </head>
   <body>
+    <div id="FullScreenLoading">
+      <img src="/images/bootscreen.png" alt="Loading..." />
+    </div>
     <h1 id="header"></h1>
   </body>
 
   <script type="module" language="javascript">
+
     import Environment from './js/environment.js'
     import {Window} from './js/Windows/window.js'
     import MusicPlayer from './js/Windows/musicplayer.js'
@@ -23,30 +27,68 @@
     
     localStorage.removeItem('windowEnvironmentState')
 
-    const env = new Environment(true)
-    /**@type {Environment} */
-    window.environment = env
-    window.windowType = Window
-    window.musicPlayerType = MusicPlayer
-    window.popupType = Popup
-    window.welcomeWindowConfig = env.defaultConfigs.get('welcome')
-    window.musicWindowConfig = env.defaultConfigs.get('music')
-    window.contactWindowConfig = env.defaultConfigs.get('contact')
-    window.aboutWindowConfig = env.defaultConfigs.get('about')
-    window.projectsWindowConfig = env.defaultConfigs.get('projects')
-    window.popupWindowConfig = env.defaultConfigs.get('popup')
+    const loadingScreen = document.getElementById("FullScreenLoading")
+
+    if (loadingScreen) {
+      let opacity = 1;
+      const fadeStep = 0.02;
+      const fadeInterval = 25;
+      
+      setInterval(() => {
+        const fadeOut = setInterval(() => {
+          opacity -= fadeStep;
+          loadingScreen.style.opacity = opacity;
+          
+          if (opacity <= 0) {
+            clearInterval(fadeOut);
+            loadingScreen.style.display = 'none';
+            loadingScreen.style.pointerEvents = 'none';
+          }
+        
+        },
+        fadeInterval);
+      }, 1000)
+    }
+
+    const windowintl = setInterval(() => {
+      const env = new Environment(true)
+      window.environment = env
+      window.windowType = Window
+      window.musicPlayerType = MusicPlayer
+      window.popupType = Popup
+      window.welcomeWindowConfig = env.defaultConfigs.get('welcome')
+      window.musicWindowConfig = env.defaultConfigs.get('music')
+      window.contactWindowConfig = env.defaultConfigs.get('contact')
+      window.aboutWindowConfig = env.defaultConfigs.get('about')
+      window.projectsWindowConfig = env.defaultConfigs.get('projects')
+      window.popupWindowConfig = env.defaultConfigs.get('popup')
 
 
-    window.aboutWindowConfig['x'] = 120
-    window.aboutWindowConfig['y'] = 80
-    env.newWindow(Window, window.aboutWindowConfig)
+      window.aboutWindowConfig['x'] = 120
+      window.aboutWindowConfig['y'] = 80
+      const intl1 = setInterval(() => {
+        env.newWindow(Window, window.aboutWindowConfig)
+        clearInterval(intl1)
+      }, 1000);
 
-    window.welcomeWindowConfig['x'] = 700
-    window.welcomeWindowConfig['y'] = 60
-    env.newWindow(Window, window.welcomeWindowConfig)
+      window.welcomeWindowConfig['x'] = 700
+      window.welcomeWindowConfig['y'] = 60
+      const intl2 = setInterval(() => {
+        env.newWindow(Window, window.welcomeWindowConfig)
+        clearInterval(intl2)
+      }, 1250);
 
-    window.musicWindowConfig['x'] = 1000
-    window.musicWindowConfig['y'] = 300
-    env.newWindow(MusicPlayer, window.musicWindowConfig)
+      window.musicWindowConfig['x'] = 1000
+      window.musicWindowConfig['y'] = 300
+      const intl3 = setInterval(() => {
+        env.newWindow(MusicPlayer, window.musicWindowConfig)
+        clearInterval(intl3)
+      }, 1500);
+
+      clearInterval(windowintl)
+    }, 500);
+    
+    
+
   </script>
 </html>

@@ -224,7 +224,7 @@ export default class Environment {
       min-height: 30px;
       align-items: center;
       padding: 0 10px;
-      z-index: 9999;
+      z-index: 9998;
       background-color: ${this.taskbar_background_color};
       color: ${this.taskbar_text_color};
       overflow: hidden;
