@@ -44,7 +44,7 @@ export default class Environment {
     /**@type {string}*/
     this.taskbar_text_color = '#fff'
 
-    /** @type {Map<string, Window>} Map of Window titles to their window objects*/
+    /** @type {Map<string, Window>} Map of Window ids to their window objects*/
     this.windows = new Map()
 
     /** @type {Map<string, Icon>} Map of window titles to their Icons.*/
@@ -57,7 +57,7 @@ export default class Environment {
       [MusicPlayer.name, {}]
     ])
 
-    /** @type {Map<string, WindowConfig>} - default windows and their configs */
+    /** @type {Map<string, WindowConfig>} - default window titles and their configs */
     this.defaultConfigs = new Map([
       [
         "welcome",
@@ -190,6 +190,7 @@ export default class Environment {
           title: 'Doom',
           content: '<p>Doom</p>',
           initialURL: '/doom',
+          singleInstance: true,
           styles: {
             minHeight: '10px',
             minWidth: '10px'
@@ -455,10 +456,11 @@ export default class Environment {
   }
 
   /**
-   * @param {IconConfig} config 
+   * @param {IconConfig} config - The configuration for the icon to be added.
+   * @param {boolean} visible - Whether the icon should be visible or hidden.
    * @returns {Icon} - The created icon
    */
-  addIcon (config) {
+  addIcon (config, visible = true) {
     console.log('Adding icon:', config.title)
     const icon = new Icon(config.title,
                           config.image,
@@ -467,6 +469,7 @@ export default class Environment {
                         )
     icon.setPosition(config.x, config.y)
     this.icons.set(config.title, icon)
+    icon.element.style.display = visible ? 'block' : 'none'
     this.iconContainer.appendChild(icon.element)
     return icon
   }
@@ -476,11 +479,24 @@ export default class Environment {
    * @returns {void}
    */
   addDefaultIcons () {
+    const iconArray = []
+    this.defaultIcons.forEach(iconConfig => {
+      const icon = this.addIcon(iconConfig, false)
+      iconArray.push(icon)
+    })
+
+    //console.log(`Adding ${iconArray.length} default icons with staggered animation`)
+    //console.log(iconArray)
+
     var index = 0
     const interval = setInterval(() => {
-      this.addIcon(this.defaultIcons[index])
+      const icon = iconArray[index]
+      icon.element.style.display = 'block'
       index++
-      if (index >= this.defaultIcons.length) clearInterval(interval)
+      if (index >= this.defaultIcons.length) {
+        clearInterval(interval)
+        return
+      }
     }, 750)
   }
 
@@ -559,16 +575,36 @@ export default class Environment {
   }
 
   /**
+   * Check if a window with the same title already exists.
+   * @param {WindowConfig} config - window configuration object
+   * @returns {Window|null} existing window instance or null
+   */
+  windowAlreadyExists (config) {
+    for (const win of this.windows.values()) {
+      console.log(`Checking existing window: ${win.title} against new window: ${config.title}`)
+      if (win.title.toLowerCase() === config.title.toLocaleLowerCase()) {
+        return win
+      }
+    }
+    return null
+  }
+
+  /**
    * Create a new window and add it to the environment
    * @param {typeof Window} WindowClass - window class/subclass type
    * @param {WindowConfig} config - window configuration object
    * @returns {Window} window instance
    */
   newWindow (WindowClass = Window, config = {}) {
-    const win = this.createWindow(crypto.randomUUID(), WindowClass, config)
-    this.pinWindow(win)
+    var win = this.windowAlreadyExists(config)
+    if (win && (win.singleInstance || config.singleInstance)) {
+      if (win.minimized) win.toggleMinimize()
+    }
+    else {
+      var win = this.createWindow(crypto.randomUUID(), WindowClass, config)
+      this.pinWindow(win)
+    }
     this.bringToFront(win)
-    this.updateZIndices()
     this.saveState()
     return win
   }

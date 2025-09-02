@@ -33,7 +33,7 @@
       const fadeStep = 0.02;
       const fadeInterval = 25;
       
-      setInterval(() => {
+      const outer = setInterval(() => {
         const fadeOut = setInterval(() => {
           opacity -= fadeStep;
           loadingScreen.style.opacity = opacity;
@@ -46,6 +46,7 @@
         
         },
         fadeInterval);
+      if (opacity <= 0) clearInterval(outer)
       }, 1000)
     }
 

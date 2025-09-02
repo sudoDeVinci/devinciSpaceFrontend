@@ -15,6 +15,7 @@
  * @property {Object} [styles] - Styles for the window
  * @property {Object.<string, Function[]>} [events] - Event listeners & callbacks
  * @property {Object} [savedState] - Saved window state
+ * @property {boolean} singleInstance - Whether only a single instance of the window is allowed
  */
 
 
@@ -89,6 +90,7 @@ export default class Window extends EventEmitter {
     this.initialMouseX = 0
     this.initialMouseY = 0
     this.children = []
+    this.singleInstance = config.singleInstance || false
 
 
 		this.x = config.x || 70
