@@ -2,24 +2,39 @@ import {Window} from './Windows/window.js'
 import Popup from './Windows/timedwindow.js'
 import {Icon} from './Icon.js'
 import MusicPlayer from './Windows/musicplayer.js'
+import SecretWindow from './Windows/secretwindow.js'
+
 
 /** @import {WindowConfig} from './Windows/window.js' */
 /** @import {IconConfig} from './Icon.js' */
 /** @import {TaskbarConfig} from './Taskbar.js'*/
 
 
+/**
+ * @typedef TaskbarButtonConfig
+ * @property {string} title - The title of the taskbar button.
+ * @property {Function} clickhandler - The function to be called when the button is clicked. 
+ */
+
+
+/**
+ * @typedef EnvironmentConfigStyleGuide
+ * @property {string} background_color - The background color of the environment.
+ * @property {string} background_image - The background image of the environment.
+ */
+
 
 /**
  * @typedef EnvironmentConfig
- * @property {TaskbarConfig} taskbar - The configuration for the taskbar.
- * @property {Map<typeof Window, WindowConfig>} windowTypes - The types of windows that can be created and their defaults.
- * @property {Map<string, WindowConfig>} defaultConfigs - The default configurations for windows.
- * @property {IconConfig[]} defaultIcons - The default icons to be added to the desktop.
- * @property {IconConfig[]} defaultTaskbarButtons - The default taskbar buttons to be added to the taskbar.
- * @property {Map<string, Window>} windows - Map of Window titles to their window objects.
- * @property {Map<string, Icon>} icons - Map of window titles to their Icons.
+ * @property {TaskbarConfig} taskbarConfig - The configuration for the taskbar.
+ * @property {Map<typeof Window, WindowConfig>} windowDefaults - The types of windows that can be created and their defaults.
+ * @property {Map<string, WindowConfig>} startupWindows - The default window titles and their configurations.
+ * @property {IconConfig[] | Icon[]} icons - The default icons to be added to the desktop.
+ * @property {TaskbarButtonConfig[]} taskbarItems - The default taskbar items to be added to the taskbar.
+ * @property {number} iconLoadDelay - Delay in milliseconds between loading each default icon.
+ * @property {number} zIndexBase - The base z-index for windows in the environment.
+ * @property {EnvironmentConfigStyleGuide} styles - Additional CSS styles to be applied to the environment.
  */
-
 
 
 /**
@@ -29,14 +44,21 @@ import MusicPlayer from './Windows/musicplayer.js'
  * @public
  */
 export default class Environment {
-  constructor () {
+
+  /**
+   * @param {EnvironmentConfig} envconfig - Configuration object for the environment. 
+   */
+  constructor (envconfig = {}) {
     console.log('Environment constructor started!')
  
     /**@type {number}*/
-    this.zIndexBase = 100
+    this.zIndexBase = envconfig.zIndexBase || 100
 
     /**@type {string}*/
-    this.background_color = '#FAF9F6'
+    this.background_color = envconfig.styles.background_color || '#FAF9F6'
+
+    /**@type {string}*/
+    this.background_image = envconfig.styles.background_image || 'images/bg.png'
 
     /**@type {string}*/
     this.taskbar_background_color = '#c0c0c0'
@@ -47,218 +69,14 @@ export default class Environment {
     /** @type {Map<string, Window>} Map of Window ids to their window objects*/
     this.windows = new Map()
 
-    /** @type {Map<string, Icon>} Map of window titles to their Icons.*/
+    /** @type {Map<string, HTMLButtonElement>} Map of window ids to their taskbar buttons.*/
+    this.taskbarWindowButtons = new Map()
+
+    /** @type {Map<string, Icon>} Map of icon titles to their Icon objects*/
     this.icons = new Map()
 
     /** @type {Map<typeof Window, WindowConfig>} The types of windows that can be created and their defaults.*/
-    this.windowTypes = new Map([
-      [Window.name, {}],
-      [Popup.name, {}],
-      [MusicPlayer.name, {}]
-    ])
-
-    /** @type {Map<string, WindowConfig>} - default window titles and their configs */
-    this.defaultConfigs = new Map([
-      [
-        "welcome",
-        {
-          height: 700,
-          width: 500,
-          x: 50,
-          y: 50,
-          icon: null,
-          title: 'Welcome!',
-          content: '<p>This is a test</p>',
-          initialURL: '/welcome',
-          styles: {
-            minHeight: '10px',
-            minWidth: '10px'
-          }
-        }
-      ],
-      [
-        "music",
-        {
-          width: 400,
-          height: 400,
-          x: 50,
-          y: 100,
-          icon: null,
-          title: 'Music Player',
-          content: '<div id="music-player"></div>',
-          tracks: [
-            {
-              title: 'Bill_Nye - Tadj Cazaubon & Violet Mirrors',
-              url: '/audio/Bill_Nye.wav'
-            },
-            {
-              title: 'Grey Skies - Molly',
-              url: '/audio/grey_skies.wav'
-            },
-            {
-              title: 'Jello - WayKool',
-              url: '/audio/jello.mp3'
-            },
-            {
-              title: 'Discotheque Diner - Molly',
-              url: '/audio/discotheque_diner.wav'
-            },
-            {
-              title: 'Weather - Tadj Cazaubon & Violet Mirrors',
-              url: '/audio/Weather.wav'
-            },
-            {
-              title: 'Jonathan Seagull - Molly',
-              url: '/audio/jonathan_seagull.wav'
-            },
-            {
-              title: 'Boomer - Violet Mirrors',
-              url: '/audio/boomer.wav'
-            },
-            {
-              title: 'In Awe of The Machine - Tadj Cazaubon & Violet Mirrors',
-              url: '/audio/machine.wav'
-            }
-                  ],
-          styles: {
-            titlebar_fontsize: '12px',
-            minHeight: '10px',
-            minWidth: '10px'
-          }
-        }
-      ],
-      [
-        "projects",
-        {
-          height: 925,
-          width: 730,
-          x: 250,
-          y: 150,
-          icon: null,
-          title: 'Projects!',
-          content: '<p>Projects</p>',
-          initialURL: '/projects'
-        }
-      ],
-      [
-        "contact",
-        {
-          height: 500,
-          width: 400,
-          icon: null,
-          title: 'Contact',
-          content: '<p>Contact</p>',
-          initialURL: '/contact',
-          styles: {
-              minHeight: '550px',
-              minWidth: '300px'
-          }
-        }
-      ],
-      [
-        "about",
-        {
-          height: 600,
-          width: 550,
-          icon: null,
-          title: 'Who I Am',
-          content: '<p>About</p>',
-          initialURL: '/about',
-          styles: {
-            minHeight: '550px',
-            minWidth: '300px'
-          }
-        }
-      ],
-      [
-        "popup",
-        {
-          height: 100,
-          width: 300,
-          icon: "/icons/messages.png",
-          title: 'Message',
-          content: '<p>This is a popup message</p>',
-          styles: {}
-        }
-      ],
-      [
-        "doom",
-        {
-          height: 600,
-          width: 1000,
-          icon: "icons/doom.png",
-          title: 'Doom',
-          content: '<p>Doom</p>',
-          initialURL: '/doom',
-          singleInstance: true,
-          styles: {
-            minHeight: '10px',
-            minWidth: '10px'
-          }
-        }
-      ]
-    ])
-
-    /** @type {IconConfig[]} - Default icons to be added to the desktop*/
-    this.defaultIcons = [
-      {
-        title: 'Welcome',
-        image: 'images/clippy.gif',
-        onhover: 'images/clippy_closeup.gif',
-        x: 20,
-        y: 50,
-        clickhandler: () => this.newWindow(Window, this.defaultConfigs.get('welcome'))
-      },
-      {
-        title: 'Current Projects',
-        image: 'icons/console.png',
-        onhover: 'icons/console.png',
-        x: 20,
-        y: 175,
-        content: "",
-        clickhandler: () => this.newWindow(Window, this.defaultConfigs.get('projects'))
-      },
-      {
-        title: 'Music',
-        image: 'icons/music.png',
-        onhover: 'icons/music.png',
-        x: 20,
-        y: 300,
-        clickhandler: () => this.newWindow(MusicPlayer, this.defaultConfigs.get('music'))
-      },
-      {
-        title: 'Doom',
-        image: 'icons/doom.png',
-        onhover: 'icons/doom.png',
-        x: 20,
-        y: 425,
-        clickhandler: () => this.newWindow(Window, this.defaultConfigs.get('doom'))
-      }
-    ]
-
-    /** @type {IconConfig[]} - Default taskbar buttons to be added to the taskbar*/
-    this.defaultTaskbarButtons = [
-      {
-        title: 'Welcome',
-        clickhandler: () => this.newWindow(Window, this.defaultConfigs.get('welcome'))
-      },
-      {
-        title: 'Projects',
-        clickhandler: () => this.newWindow(Window, this.defaultConfigs.get('projects'))
-      },
-      {
-        title: 'Contact',
-        clickhandler: () => this.newWindow(Window, this.defaultConfigs.get('contact'))
-      },
-      {
-        title: 'Source',
-        clickhandler: () => globalThis.window.open('https://github.com/sudoDeVinci/devinci.cloud-frontend')
-      },
-      {
-        title: 'About Me',
-        clickhandler: () => this.newWindow(Window, this.defaultConfigs.get('about'))
-      }
-    ]
+    this.windowTypes = envconfig.windowDefaults || new Map()
 
     // Page Environment Container
     this.environment = document.createElement('div')
@@ -269,9 +87,9 @@ export default class Environment {
       overflow-x: hidden;
       overflow-y: hidden;
       background-color: ${this.background_color};
-      background-image: url('images/bg.png');
+      background-image: url('${this.background_image}');
       background-size: cover;
-      `
+    `
 
     // Taskbar DOM element
     this.taskbar = document.createElement('div')
@@ -291,7 +109,7 @@ export default class Environment {
       color: ${this.taskbar_text_color};
       overflow: hidden;
       cursor: default;
-      `
+    `
 
     // Icon container DOM element
     this.iconContainer = document.createElement('div')
@@ -305,35 +123,54 @@ export default class Environment {
       z-index: ${this.zIndexBase - 1};
       pointer-events: auto;
     `
+
     this.environment.appendChild(this.iconContainer)
 
+    this.taskbarButtonContainer = document.createElement('div')
+    this.taskbarButtonContainer.id = 'taskbar-button-container'
+    this.taskbarButtonContainer.style.cssText = `
+      display: flex;
+      overflow-x: hidden;
+      height: 25px;
+      min-width: 2px;
+      padding: 2px 5px;
+      justify-content: end;
+      margin-left: 0px;
+      align-items: center;
+    `
+
     // Add default icons
-    this.addDefaultTaskbarIcons()
-    this.addDefaultIcons()
+    this.taskbar.appendChild(this.taskbarButtonContainer)
+    this.addTaskbarIcons(envconfig.taskbarItems || [])
+    this.addDesktopIcons(envconfig.icons || [], envconfig.iconLoadDelay || 5)
     this.createScrollButtons()
 
     this.notificationContainer = document.createElement('div')
     this.notificationContainer.id = 'notification-container'
-    this.notificationContainer.style.display = 'flex'
-    this.notificationContainer.style.overflowX = 'hidden'
-    this.notificationContainer.style.flexGrow = 1
-    this.notificationContainer.style.height = '25px'
-    this.notificationContainer.style.minWidth = '2px'
-    this.notificationContainer.style.maxWidth = '20vw'
-    this.notificationContainer.style.boxShadow = 'rgb(255, 255, 255) -1px -1px inset, rgb(0, 0, 0) 1px 1px inset, rgb(128, 128, 128) -2px -2px inset, rgb(223, 223, 223) 2px 2px inset'
-    this.notificationContainer.style.padding = '2px 5px'
-    this.notificationContainer.style.justifyContent = 'end'
-    this.notificationContainer.style.marginLeft = 'auto'
-    this.notificationContainer.style.alignItems = 'center'
+    this.notificationContainer.style.cssText = `
+      display: flex;
+      overflow-x: hidden;
+      flex-grow: 1;
+      height: 25px;
+      min-width: 2px;
+      max-width: 20vw;
+      box-shadow: rgb(255, 255, 255) -1px -1px inset, rgb(0, 0, 0) 1px 1px inset, rgb(128, 128, 128) -2px -2px inset, rgb(223, 223, 223) 2px 2px inset;
+      padding: 2px 5px;
+      justify-content: end;
+      margin-left: auto;
+      align-items: center;
+    `
 
     this.datetime = new Date()
     const time = document.createElement('div')
     time.textContent = this.datetime.toLocaleTimeString()
-    time.style.fontSize = '14px'
-    time.style.color = 'rgb(0, 0, 0)'
-    time.style.whiteSpace = 'nowrap'
-    time.style.overflow = 'hidden'
-    time.style.textOverflow = 'ellipsis'
+    time.style.cssText = `
+      font-size: 14px;
+      color: rgb(0, 0, 0);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    `
     this.notificationContainer.appendChild(time)
 
     this.taskbar.appendChild(this.notificationContainer)
@@ -355,6 +192,15 @@ export default class Environment {
     document.body.appendChild(this.environment)
     // Append taskbar to the environment container
     this.environment.appendChild(this.taskbar)
+
+    // Load up the startup windows from config
+    if (envconfig.startupWindows) {
+      envconfig.startupWindows.forEach((config, title) => {
+        if (config.openOnStart) {
+          this.newWindow(config?.type | Window, config)
+        }
+      })
+    }
   }
 
   createScrollButtons() {
@@ -446,28 +292,46 @@ export default class Environment {
 
   /**
    * Add default taskbar icons from configuration.
+   * @param {TaskbarButtonConfig[]} icons - Array of taskbar button configurations to be added.
    * @returns {void}
    */
-  addDefaultTaskbarIcons () {
-    this.defaultTaskbarButtons.forEach(iconConfig => {
+  addTaskbarIcons (icons) {
+    icons.forEach(iconConfig => {
       const taskbarIcon = this.createTaskbarIcon(iconConfig)
-      this.taskbar.appendChild(taskbarIcon)
+      this.taskbarButtonContainer.appendChild(taskbarIcon)
     })
   }
 
   /**
-   * @param {IconConfig} config - The configuration for the icon to be added.
+   * @param {IconConfig | Icon} config - The configuration for the icon to be added.
    * @param {boolean} visible - Whether the icon should be visible or hidden.
    * @returns {Icon} - The created icon
    */
   addIcon (config, visible = true) {
-    console.log('Adding icon:', config.title)
-    const icon = new Icon(config.title,
-                          config.image,
-                          config.onhover,
-                          config.clickhandler
-                        )
-    icon.setPosition(config.x, config.y)
+
+    console.log(`Adding icon: ${config.title} of type: ${config.constructor.name}`)
+    if (this.icons.has(config.title)) {
+      console.warn(`Icon with title ${config.title} already exists. Skipping addition.`)
+      return this.icons.get(config.title)
+    }
+
+    /** @type {Icon} */
+    var icon
+
+    if (!(config instanceof Icon)) {
+      console.log('Creating new Icon instance for:', config.title)
+      icon = new Icon(config.title,
+                      config.image,
+                      config.onhover,
+                      config.clickhandler
+                    )
+      icon.setPosition(config.x, config.y)
+    }
+    else {
+      console.log('Using existing Icon instance for:', config.title)
+      icon = config
+    }
+
     this.icons.set(config.title, icon)
     icon.element.style.display = visible ? 'block' : 'none'
     this.iconContainer.appendChild(icon.element)
@@ -475,34 +339,42 @@ export default class Environment {
   }
 
   /**
-   * Add default icons from configuration.
+   * Add icons from list to the desktop with a staggered delay.
+   * @param {IconConfig[] | Icon[]} configs - Array of icon/configurations to be added.
+   * @param {number} delay - Delay in milliseconds between loading each icon.
    * @returns {void}
    */
-  addDefaultIcons () {
-    const iconArray = []
-    this.defaultIcons.forEach(iconConfig => {
-      const icon = this.addIcon(iconConfig, false)
-      iconArray.push(icon)
-    })
+  addDesktopIcons (configs, delay = 5) {
+    /** @type {Icon[]} */
+    const iconArray = new Array(configs.length).fill(null)
 
-    //console.log(`Adding ${iconArray.length} default icons with staggered animation`)
-    //console.log(iconArray)
+    if (!Array.isArray(configs) || configs.length === 0) {
+      console.error('Configs must be an array of IconConfig or Icon objects.')
+      return
+    }
 
     var index = 0
+    configs.forEach(iconConfig => {
+      const icon = this.addIcon(iconConfig, false)
+      iconArray[index] = icon
+      index++
+    })
+
+    index = 0
     const interval = setInterval(() => {
       const icon = iconArray[index]
       icon.element.style.display = 'block'
       index++
-      if (index >= this.defaultIcons.length) {
+      if (index >= configs.length) {
         clearInterval(interval)
         return
       }
-    }, 750)
+    }, delay)
   }
 
   /**
    * Create a taskbar icon element.
-   * @param {IconConfig} iconfig - The config for the taskbar icon to be created.
+   * @param {TaskbarButtonConfig} iconfig - The config for the taskbar icon to be created.
    * @returns {HTMLButtonElement} - The created taskbar icon element.
    */
   createTaskbarIcon (iconfig) {
@@ -549,7 +421,7 @@ export default class Environment {
     taskbarItem.textContent = window.title
     taskbarItem.onclick = () => window.toggleMinimize()
     this.taskbarScrollContainer.appendChild(taskbarItem)
-    this.icons.set(window.id, taskbarItem)
+    this.taskbarWindowButtons.set(window.id, taskbarItem)
     this.updateScrollButtons()
   }
 
@@ -563,8 +435,8 @@ export default class Environment {
     this.windows.delete(window.id)
     this.environment.removeChild(window.element)
 
-    this.taskbarScrollContainer.removeChild(this.icons.get(window.id))
-    this.icons.delete(window.id)
+    this.taskbarScrollContainer.removeChild(this.taskbarWindowButtons.get(window.id))
+    this.taskbarWindowButtons.delete(window.id)
 
     window.destroy()
 
@@ -673,7 +545,7 @@ export default class Environment {
     newWindow.on('drag', () => this.saveState())
     newWindow.on('dragEnd', () => this.saveState())
     newWindow.on('popup', (data) => this.newWindow(`${crypto.randomUUID()}-${id}`, data, Popup))
-    newWindow.on('changeTaskbarTitle', (data) => {this.icons.get(data.id).textContent = data.title})
+    newWindow.on('changeTaskbarTitle', (data) => {this.taskbarWindowButtons.get(data.id).textContent = data.title})
   
     this.windows.set(newWindow.id, newWindow)
     this.environment.appendChild(newWindow.element)

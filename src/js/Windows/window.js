@@ -2,6 +2,7 @@
 
 /**
  * @typedef {Object} WindowConfig
+ * @property {typeof Window} type - The window type/Class
  * @property {number} width - Default window width
  * @property {number} height - Default window height
  * @property {number} x - Default window x position
