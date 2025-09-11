@@ -323,7 +323,7 @@ const taskbarButtons = [
     },
     {
         title: 'Source',
-        clickhandler: () => globalThis.window.open('https://github.com/sudoDeVinci/devinci.cloud-frontend', target='_blank')
+        clickhandler: () => window.open('https://github.com/sudoDeVinci/devinci.cloud-frontend')
     },
     {
         title: 'About Me',

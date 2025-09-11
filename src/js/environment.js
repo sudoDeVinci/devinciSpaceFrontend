@@ -1,8 +1,6 @@
 import {Window} from './Windows/window.js'
 import Popup from './Windows/timedwindow.js'
 import {Icon} from './Icon.js'
-import MusicPlayer from './Windows/musicplayer.js'
-import SecretWindow from './Windows/secretwindow.js'
 
 
 /** @import {WindowConfig} from './Windows/window.js' */
@@ -505,7 +503,7 @@ export default class Environment {
       console.log(`>> ${WindowClass.name} class not registered in windowTypes`)
       
       // Check for window class inheritence
-      if (WindowClass.prototype instanceof Window) {
+      if (WindowClass.prototype instanceof Window || WindowClass === Window) {
         console.log('>>> Window class is a subclass of Window - Registering new Type')
         this.windowTypes.set(WindowClass, {
           width: config.width || 600,
