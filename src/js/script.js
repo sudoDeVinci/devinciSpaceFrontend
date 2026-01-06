@@ -67,6 +67,10 @@ const startupwindows = new Map([
       content: '<div id="music-player"></div>',
       tracks: [
         {
+          title: "Cheesed - Violet Mirrors",
+          url: "/audio/Cheesed.wav",
+        },
+        {
           title: "Bill_Nye - Tadj Cazaubon & Violet Mirrors",
           url: "/audio/Bill_Nye.wav",
         },
